@@ -24,6 +24,27 @@ banner_font = pygame.font.Font("assets/fonts/1up.ttf", 28)
 font = pygame.font.Font("assets/fonts/AldotheApache.ttf", 48)
 
 
+class Button:
+    def __init__(self, x, y, text, clicked, surf):
+        self.x = x
+        self.y = y
+        self.text = text
+        self.clicked = clicked
+        self.surf = surf
+
+    def draw(self):
+        cir = pygame.draw.circle(self.surf, (45, 89, 135), (self.x, self.y), 35)
+        if cir.collidepoint(pygame.mouse.get_pos()):
+            btn = pygame.mouse.get_pressed()
+            if btn[0]:
+                pygame.draw.circle(self.surf, (190, 35, 35), (self.x, self.y), 35)
+                self.clicked = True
+            else:
+                pygame.draw.circle(self.surf, (190, 89, 135), (self.x, self.y), 35)
+        pygame.draw.circle(self.surf, "white", (self.x, self.y), 35, 3)
+        self.surf.blit(pause_font.render(self.text, True, "white"), (self.x - 15, self.y - 25))
+
+
 def draw_screen():
     # draw lines for background and titlebar
     pygame.draw.rect(screen, (32, 42, 68), [0, HEIGHT - 100, WIDTH, 100])
@@ -36,6 +57,8 @@ def draw_screen():
     # drawing texts
     screen.blit(header_font.render(f"Level: {level}", True, "white"), (10, HEIGHT - 75))
     screen.blit(header_font.render(f'"{active_str}"', True, "white"), (270, HEIGHT - 75))
+    pause_btn = Button(748, HEIGHT - 52, "II", False, screen)
+    pause_btn.draw()
     screen.blit(banner_font.render(f"Score: {score}", True, "black"), (250, 10))
     screen.blit(banner_font.render(f"Best: {high_score}", True, "black"), (550, 10))
     screen.blit(banner_font.render(f"Lives: {lives}", True, "black"), (10, 10))
