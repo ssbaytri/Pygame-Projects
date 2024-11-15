@@ -16,7 +16,10 @@ active_str = "test string"
 score = 0
 high_score = 1
 lives = 5
-
+paused = False
+submit = ""
+letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
+           'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 # Assets loading
 header_font = pygame.font.Font("assets/fonts/Square.ttf", 50)
 pause_font = pygame.font.Font("assets/fonts/1up.ttf", 38)
@@ -62,6 +65,7 @@ def draw_screen():
     screen.blit(banner_font.render(f"Score: {score}", True, "black"), (250, 10))
     screen.blit(banner_font.render(f"Best: {high_score}", True, "black"), (550, 10))
     screen.blit(banner_font.render(f"Lives: {lives}", True, "black"), (10, 10))
+    return pause_btn.clicked
 
 
 running = True
@@ -70,9 +74,19 @@ while running:
         if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
             running = False
 
+        if event.type == pygame.KEYDOWN:
+            if not paused:
+                if event.unicode.lower() in letters:
+                    active_str += event.unicode.lower()
+                if event.key == pygame.K_BACKSPACE and len(active_str) > 0:
+                    active_str = active_str[:-1]
+                if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
+                    submit = active_str
+                    active_str = ""
+
     screen.fill("gray")
     timer.tick(FPS)
-    draw_screen()
+    pause_button = draw_screen()
 
     pygame.display.flip()
 pygame.quit()
