@@ -1,7 +1,18 @@
 import pygame
+from nltk.corpus import words
 
 # Game Setup
 pygame.init()
+
+wordlist = words.words()
+len_indexes = []
+length = 1
+
+wordlist.sort(key=len)
+for i in range(len(wordlist)):
+    if len(wordlist[i] > length):
+        length += 1
+        len_indexes.append(i)
 
 WIDTH, HEIGHT = 800, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -20,6 +31,7 @@ paused = False
 submit = ""
 letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
            'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+word_objects = []
 # Assets loading
 header_font = pygame.font.Font("assets/fonts/Square.ttf", 50)
 pause_font = pygame.font.Font("assets/fonts/1up.ttf", 38)
@@ -68,8 +80,22 @@ def draw_screen():
     return pause_btn.clicked
 
 
+def draw_pause():
+    pass
+
+
+def generate_level():
+    word_objs = []
+    return word_objs
+
+
 running = True
 while running:
+    if paused:
+        draw_pause()
+    elif new_level:
+        word_objects = generate_level()
+        new_level = False
     for event in pygame.event.get():
         if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
             running = False
