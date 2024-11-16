@@ -13,6 +13,8 @@ for i in range(len(wordlist)):
     if len(wordlist[i] > length):
         length += 1
         len_indexes.append(i)
+len_indexes.append(len(wordlist))
+print(len_indexes)
 
 WIDTH, HEIGHT = 800, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -32,6 +34,8 @@ submit = ""
 letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
            'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 word_objects = []
+new_level = True
+
 # Assets loading
 header_font = pygame.font.Font("assets/fonts/Square.ttf", 50)
 pause_font = pygame.font.Font("assets/fonts/1up.ttf", 38)
