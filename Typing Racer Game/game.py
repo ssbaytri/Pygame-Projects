@@ -1,3 +1,4 @@
+import random
 import pygame
 from nltk.corpus import words
 
@@ -10,11 +11,11 @@ length = 1
 
 wordlist.sort(key=len)
 for i in range(len(wordlist)):
-    if len(wordlist[i] > length):
+    if len(wordlist[i]) > length:
         length += 1
         len_indexes.append(i)
 len_indexes.append(len(wordlist))
-print(len_indexes)
+
 
 WIDTH, HEIGHT = 800, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -35,12 +36,32 @@ letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
            'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 word_objects = []
 new_level = True
+# 2 letter - 8 letter choices as boolean options
+choices = [False, True, False, False, False, False, False, False]
 
 # Assets loading
 header_font = pygame.font.Font("assets/fonts/Square.ttf", 50)
 pause_font = pygame.font.Font("assets/fonts/1up.ttf", 38)
 banner_font = pygame.font.Font("assets/fonts/1up.ttf", 28)
 font = pygame.font.Font("assets/fonts/AldotheApache.ttf", 48)
+
+
+class Word:
+    def __init__(self, text, speed, x_pos, y_pos):
+        self.x_pos = x_pos
+        self.y_pos = y_pos
+        self.text = text
+        self.speed = speed
+
+    def draw(self):
+        color = 'black'
+        screen.blit(font.render(self.text, True, color), (self.x_pos, self.y_pos))
+        act_len = len(active_str)
+        if active_str == self.text[:act_len]:
+            screen.blit(font.render(active_str, True, 'green'), (self.x_pos, self.y_pos))
+
+    def update(self):
+        self.x_pos -= self.speed
 
 
 class Button:
@@ -90,6 +111,22 @@ def draw_pause():
 
 def generate_level():
     word_objs = []
+    include = []
+    vertical_spacing = (HEIGHT - 150) // level
+    if True not in choices:
+        choices[0] = True
+    for i in range(len(choices)):
+        if choices[i]:
+            include.append((len_indexes[i], len_indexes[i+1]))
+    for i in range(level):
+        speed = random.randint(2, 3)
+        y_pos = random.randint(10 + (i * vertical_spacing), (i + 1) * vertical_spacing)
+        x_pos = random.randint(WIDTH, WIDTH + 500)
+        ind_sel = random.choice(include)
+        index = random.randint(ind_sel[0], ind_sel[1])
+        text = wordlist[index].lower()
+        new_word = Word(text, speed, x_pos, y_pos)
+        word_objs.append(new_word)
     return word_objs
 
 
