@@ -4,6 +4,7 @@ from nltk.corpus import words
 
 # Game Setup
 pygame.init()
+# to download the 'words' --> nltk.download('words')
 
 wordlist = words.words()
 len_indexes = []
@@ -25,7 +26,7 @@ timer = pygame.time.Clock()
 FPS = 60
 
 # Game vars
-level = 0
+level = 1
 active_str = "test string"
 score = 0
 high_score = 1
@@ -109,6 +110,16 @@ def draw_pause():
     pass
 
 
+def check_answer(scor):
+    for word in word_objects:
+        if word.text == submit:
+            points = word.speed * len(word.text) * 10 * (len(word.text) / 3)
+            scor += int(points)
+            word_objects.remove(word)
+            # play the successful answer sound
+    return scor
+
+
 def generate_level():
     word_objs = []
     include = []
@@ -134,9 +145,28 @@ running = True
 while running:
     if paused:
         draw_pause()
-    elif new_level:
+    if new_level and not paused:
         word_objects = generate_level()
         new_level = False
+    else:
+        for w in word_objects:
+            w.draw()
+            if not paused:
+                w.update()
+            if w.x_pos < -200:
+                word_objects.remove(w)
+                lives -= 1
+    if len(word_objects) <= 0 and not paused:
+        level += 1
+        new_level = True
+    if submit != "":
+        init = score
+        score = check_answer(score)
+        submit = ""
+        if init == score:
+            # play wrong answer sound
+            pass
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
             running = False
