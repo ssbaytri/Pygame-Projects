@@ -15,8 +15,12 @@ class Game:
         self.all_sprites = pygame.sprite.Group()
         self.collision_sprites = pygame.sprite.Group()
 
+        # Scale factor
+        bg_height = pygame.image.load("../graphics/environment/background.png").get_height()
+        self.scale_factor = WINDOW_HEIGHT / bg_height
+
         # sprites setup
-        BG(self.all_sprites)
+        BG(self.scale_factor, self.all_sprites)
 
     def run(self):
         last_time = time.time()
@@ -30,6 +34,8 @@ class Game:
                     sys.exit()
 
             # game logic
+            self.display_surface.fill("black")
+            self.all_sprites.update(dt)
             self.all_sprites.draw(self.display_surface)
 
             pygame.display.update()
