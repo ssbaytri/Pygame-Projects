@@ -22,3 +22,11 @@ class BG(pygame.sprite.Sprite):
         self.rect.x = round(self.pos.x)
         if self.rect.centerx <= 0:
             self.pos.x = 0
+
+
+class Ground(pygame.sprite.Sprite):
+    def __init__(self, scale_factor, *groups):
+        super().__init__(*groups)
+        ground_surf = pygame.image.load("../graphics/environment/ground.png").convert_alpha()
+        self.image = pygame.transform.scale(ground_surf, pygame.math.Vector2(ground_surf.get_size()) * scale_factor)
+        self.rect = self.image.get_rect(topleft=(0, 0))
