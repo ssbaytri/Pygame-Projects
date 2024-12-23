@@ -29,6 +29,7 @@ class Ground(pygame.sprite.Sprite):
         super().__init__(*groups)
         ground_surf = pygame.image.load("../graphics/environment/ground.png").convert_alpha()
         self.image = pygame.transform.scale(ground_surf, pygame.math.Vector2(ground_surf.get_size()) * scale_factor)
+
         self.rect = self.image.get_rect(bottomleft=(0, WINDOW_HEIGHT))
         self.pos = pygame.math.Vector2(self.rect.topleft)
 
@@ -37,3 +38,21 @@ class Ground(pygame.sprite.Sprite):
         self.rect.x = round(self.pos.x)
         if self.rect.centerx <= 0:
             self.pos.x = 0
+
+
+class Plane(pygame.sprite.Sprite):
+    def __init__(self, scale_factor, *groups):
+        super().__init__(*groups)
+
+        self.import_frames(scale_factor)
+        self.frame_idx = 0
+        self.image = self.frames[self.frame_idx]
+
+        self.rect = self.image.get_rect(midleft=(WINDOW_WIDTH / 20, WINDOW_HEIGHT / 2))
+
+    def import_frames(self, scale_factor):
+        self.frames = []
+        for i in range(3):
+            surf = pygame.image.load(f"../graphics/plane/red{i}.png").convert_alpha()
+            scaled_surf = pygame.transform.scale(surf, pygame.math.Vector2(surf.get_size()) * scale_factor)
+            self.frames.append(scaled_surf)
