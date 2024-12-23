@@ -29,4 +29,11 @@ class Ground(pygame.sprite.Sprite):
         super().__init__(*groups)
         ground_surf = pygame.image.load("../graphics/environment/ground.png").convert_alpha()
         self.image = pygame.transform.scale(ground_surf, pygame.math.Vector2(ground_surf.get_size()) * scale_factor)
-        self.rect = self.image.get_rect(topleft=(0, 0))
+        self.rect = self.image.get_rect(bottomleft=(0, WINDOW_HEIGHT))
+        self.pos = pygame.math.Vector2(self.rect.topleft)
+
+    def update(self, dt):
+        self.pos.x -= 360 * dt
+        self.rect.x = round(self.pos.x)
+        if self.rect.centerx <= 0:
+            self.pos.x = 0
