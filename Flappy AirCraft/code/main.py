@@ -22,7 +22,7 @@ class Game:
         # sprites setup
         BG(self.scale_factor, self.all_sprites)
         Ground(self.scale_factor, self.all_sprites)
-        Plane(self.scale_factor / 1.5, self.all_sprites)
+        self.plane = Plane(self.scale_factor / 1.5, self.all_sprites)
 
     def run(self):
         last_time = time.time()
@@ -34,6 +34,8 @@ class Game:
                 if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                     pygame.quit()
                     sys.exit()
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    self.plane.jump()
 
             # game logic
             self.display_surface.fill("black")

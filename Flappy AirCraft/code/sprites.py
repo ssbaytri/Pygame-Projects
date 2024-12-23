@@ -51,7 +51,7 @@ class Plane(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(midleft=(WINDOW_WIDTH / 20, WINDOW_HEIGHT / 2))
         self.pos = pygame.math.Vector2(self.rect.topleft)
 
-        self.gravity = 250
+        self.gravity = 600
         self.direction = 0
 
     def import_frames(self, scale_factor):
@@ -65,6 +65,9 @@ class Plane(pygame.sprite.Sprite):
         self.direction += self.gravity * dt
         self.pos.y += self.direction * dt
         self.rect.y = round(self.pos.y)
+
+    def jump(self):
+        self.direction = -400
 
     def update(self, dt):
         self.gravity_logic(dt)
