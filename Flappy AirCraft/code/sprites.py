@@ -69,5 +69,12 @@ class Plane(pygame.sprite.Sprite):
     def jump(self):
         self.direction = -400
 
+    def animate(self, dt):
+        self.frame_idx += 10 * dt
+        if self.frame_idx >= len(self.frames):
+            self.frame_idx = 0
+        self.image = self.frames[int(self.frame_idx)]
+
     def update(self, dt):
         self.gravity_logic(dt)
+        self.animate(dt)
