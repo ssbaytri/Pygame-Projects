@@ -1,6 +1,6 @@
 import pygame
 from settings import *
-
+from random import choice, randint
 
 class BG(pygame.sprite.Sprite):
     def __init__(self, scale_factor, *groups):
@@ -83,3 +83,25 @@ class Plane(pygame.sprite.Sprite):
         self.gravity_logic(dt)
         self.animate(dt)
         self.rotate(dt)
+
+
+class Obstacle(pygame.sprite.Sprite):
+    def __init__(self, scale_factor, *groups):
+        super().__init__(*groups)
+        obstacle_orientation = choice(["up", "down"])
+        surf = pygame.image.load(f"../graphics/obstacles/{choice((0, 1))}.png").convert_alpha()
+        self.image = pygame.transform.scale(surf, pygame.math.Vector2(surf.get_size()) * scale_factor)
+
+        x = WINDOW_WIDTH + randint(40, 100)
+
+        if obstacle_orientation == "up":
+            y = WINDOW_HEIGHT + randint(10, 50)
+            self.rect = self.image.get_rect(midbottom=(x, y))
+        else:
+            y = randint(-50, -10)
+            self.image = pygame.transform.flip(self.image, False, True)
+            self.rect = self.image.get_rect(midtop=(x, y))
+
+        self.pos = pygame.math.Vector2(self.rect.topleft)
+        
+
