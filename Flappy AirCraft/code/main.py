@@ -21,19 +21,25 @@ class Game:
 
         # sprites setup
         BG(self.scale_factor, self.all_sprites)
-        Ground(self.scale_factor, self.all_sprites)
+        Ground(self.scale_factor, self.all_sprites, self.collision_sprites)
         self.plane = Plane(self.scale_factor / 1.6, self.all_sprites)
 
         # Obstacles Timer
         self.obstacle_timer = pygame.USEREVENT + 1
         pygame.time.set_timer(self.obstacle_timer, 1400)
 
+    def collisions(self):
+        if pygame.sprite.spritecollide(self.plane, self.collision_sprites, False, pygame.sprite.collide_mask) \
+                or self.plane.rect.top <= 0:
+            pygame.quit()
+            sys.exit()
+
     def run(self):
         last_time = time.time()
         while True:
             dt = time.time() - last_time
             last_time = time.time()
-            
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                     pygame.quit()
@@ -41,11 +47,12 @@ class Game:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     self.plane.jump()
                 if event.type == self.obstacle_timer:
-                    Obstacle(self.scale_factor, self.all_sprites)
+                    Obstacle(self.scale_factor * 1.1, self.all_sprites, self.collision_sprites)
 
             # game logic
             self.display_surface.fill("black")
             self.all_sprites.update(dt)
+            self.collisions()
             self.all_sprites.draw(self.display_surface)
 
             pygame.display.update()
