@@ -40,7 +40,11 @@ class Game:
     def collisions(self):
         if pygame.sprite.spritecollide(self.plane, self.collision_sprites, False, pygame.sprite.collide_mask) \
                 or self.plane.rect.top <= 0:
+            for sprite in self.collision_sprites.sprites():
+                if sprite.sprite_type == "obstacle":
+                    sprite.kill()
             self.active = False
+            self.plane.kill()
 
     def display_score(self):
         if self.active:
@@ -64,8 +68,12 @@ class Game:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                    self.plane.jump()
-                if event.type == self.obstacle_timer:
+                    if self.active:
+                        self.plane.jump()
+                    else:
+                        self.active = True
+                        self.plane = Plane(self.scale_factor / 1.7, self.all_sprites)
+                if event.type == self.obstacle_timer and self.active:
                     Obstacle(self.scale_factor * 1.1, self.all_sprites, self.collision_sprites)
 
             # game logic
