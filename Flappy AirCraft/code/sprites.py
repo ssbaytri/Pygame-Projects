@@ -123,3 +123,4 @@ class Obstacle(pygame.sprite.Sprite):
         if self.rect.right <= -100:
             self.kill()
 
+# END OF THE GAME
