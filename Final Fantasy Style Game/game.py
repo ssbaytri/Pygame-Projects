@@ -17,6 +17,30 @@ pygame.display.set_caption("Final Fantasy Style Game")
 bg_img = pygame.image.load("img/Background/background.png").convert_alpha()
 panel_img = pygame.image.load("img/Icons/panel.png").convert_alpha()
 
+class Fighter():
+    def __init__(self, x, y, name, hp, strenght, potions):
+        self.name = name
+        self.max_hp = hp
+        self.health = hp
+        self.strength = strenght
+        self.start_potion = potions
+        self.potion = potions
+        self.alive = True
+        img = pygame.image.load(f"img/{self.name}/Idle/0.png").convert_alpha()
+        self.image = pygame.transform.scale(img, (img.get_width() * 3, img.get_height() * 3))
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+        
+    def draw(self):
+        window.blit(self.image, self.rect)
+
+
+knight = Fighter(200, 260, "Knight", 30, 10, 3)
+bandit1 = Fighter(550, 270, "Bandit", 20, 6, 1)
+bandit2 = Fighter(700, 270, "Bandit", 20, 6, 1)
+
+bandits = [bandit1, bandit2]
+
 def drwa_bg():
     window.blit(bg_img, (0, 0))
     
@@ -32,6 +56,11 @@ while running:
     clock.tick(FPS)
     drwa_bg()
     draw_panel()
+    
+    knight.draw()
+    for bandit in bandits:
+        bandit.draw()
+
     pygame.display.update()
         
 pygame.quit()
