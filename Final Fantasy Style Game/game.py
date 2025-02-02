@@ -28,12 +28,16 @@ class Fighter():
         self.alive = True
         self.animation_list = []
         self.frame_index = 0
+        self.action = 0  # 0:idle, 1:attack, 2:hurt, 3:dead
         self.update_timer = pygame.time.get_ticks()
+        tmp_list = []
         for i in range(8):
             img = pygame.image.load(f"img/{self.name}/Idle/{i}.png").convert_alpha()
             img = pygame.transform.scale(img, (img.get_width() * 3, img.get_height() * 3))
-            self.animation_list.append(img) 
-        self.image = self.animation_list[self.frame_index]
+            tmp_list.append(img)
+        tmp_list = []
+        self.animation_list.append(tmp_list)
+        self.image = self.animation_list[self.action][self.frame_index]
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
         
@@ -42,11 +46,11 @@ class Fighter():
         
     def update(self):
         animation_cooldown = 100
-        self.image = self.animation_list[self.frame_index]
+        self.image = self.animation_list[self.action][self.frame_index]
         if pygame.time.get_ticks() - self.update_timer > animation_cooldown:
             self.update_timer = pygame.time.get_ticks()
             self.frame_index += 1
-        if self.frame_index >= len(self.animation_list):
+        if self.frame_index >= len(self.animation_list[self.action]):
             self.frame_index = 0
 
 
