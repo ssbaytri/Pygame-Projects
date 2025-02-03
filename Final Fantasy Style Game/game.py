@@ -17,12 +17,13 @@ pygame.display.set_caption("Final Fantasy Style Game")
 bg_img = pygame.image.load("img/Background/background.png").convert_alpha()
 panel_img = pygame.image.load("img/Icons/panel.png").convert_alpha()
 
+
 class Fighter():
-    def __init__(self, x, y, name, hp, strenght, potions):
+    def __init__(self, x, y, name, hp, strength, potions):
         self.name = name
         self.max_hp = hp
         self.health = hp
-        self.strength = strenght
+        self.strength = strength
         self.start_potion = potions
         self.potion = potions
         self.alive = True
@@ -35,7 +36,12 @@ class Fighter():
             img = pygame.image.load(f"img/{self.name}/Idle/{i}.png").convert_alpha()
             img = pygame.transform.scale(img, (img.get_width() * 3, img.get_height() * 3))
             tmp_list.append(img)
+        self.animation_list.append(tmp_list)
         tmp_list = []
+        for i in range(8):
+            img = pygame.image.load(f"img/{self.name}/Idle/{i}.png").convert_alpha()
+            img = pygame.transform.scale(img, (img.get_width() * 3, img.get_height() * 3))
+            tmp_list.append(img)
         self.animation_list.append(tmp_list)
         self.image = self.animation_list[self.action][self.frame_index]
         self.rect = self.image.get_rect()
