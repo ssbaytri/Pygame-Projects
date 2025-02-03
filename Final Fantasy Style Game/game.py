@@ -12,6 +12,7 @@ window_height = 400 + bottom_panel
 
 window = pygame.display.set_mode((window_width, window_height))
 pygame.display.set_caption("Final Fantasy Style Game")
+font = pygame.font.SysFont("Times New Roman", 26)
 
 # load images
 bg_img = pygame.image.load("img/Background/background.png").convert_alpha()
@@ -39,17 +40,17 @@ class Fighter():
         self.animation_list.append(tmp_list)
         tmp_list = []
         for i in range(8):
-            img = pygame.image.load(f"img/{self.name}/Idle/{i}.png").convert_alpha()
+            img = pygame.image.load(f"img/{self.name}/Attack/{i}.png").convert_alpha()
             img = pygame.transform.scale(img, (img.get_width() * 3, img.get_height() * 3))
             tmp_list.append(img)
         self.animation_list.append(tmp_list)
         self.image = self.animation_list[self.action][self.frame_index]
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
-        
+
     def draw(self):
         window.blit(self.image, self.rect)
-        
+
     def update(self):
         animation_cooldown = 100
         self.image = self.animation_list[self.action][self.frame_index]
@@ -60,28 +61,61 @@ class Fighter():
             self.frame_index = 0
 
 
+class HealthBar():
+    def __init__(self, x, y, hp, max_hp):
+        self.x = x
+        self.y = y
+        self.hp = hp
+        self.max_hp = max_hp
+
+    def draw(self, hp):
+        self.hp = hp
+        ratio = self.hp / self.max_hp
+        pygame.draw.rect(window, "red", (self.x, self.y, 150, 20))
+        pygame.draw.rect(window, "green", (self.x, self.y, 150 * ratio, 20))
+
+
 knight = Fighter(200, 260, "Knight", 30, 10, 3)
 bandit1 = Fighter(550, 270, "Bandit", 20, 6, 1)
 bandit2 = Fighter(700, 270, "Bandit", 20, 6, 1)
 
 bandits = [bandit1, bandit2]
 
-def drwa_bg():
+knight_hp = HealthBar(100, window_height - bottom_panel + 40, knight.health, knight.max_hp)
+bandit1_hp = HealthBar(550, window_height - bottom_panel + 40, bandit1.health, bandit1.max_hp)
+bandit2_hp = HealthBar(550, window_height - bottom_panel + 100, bandit2.health, bandit2.max_hp)
+
+
+def draw_text(text, text_font, color, x, y):
+    img = text_font.render(text, True, color)
+    window.blit(img, (x, y))
+
+
+def draw_bg():
     window.blit(bg_img, (0, 0))
-    
+
+
 def draw_panel():
     window.blit(panel_img, (0, window_height - bottom_panel))
+    draw_text(f"{knight.name} HP: {knight.health}", font, "red", 100, window_height - bottom_panel + 10)
+    for i, bandit in enumerate(bandits):
+        draw_text(f"{bandit.name} HP: {bandit.health}", font, "red", 550,
+                  (window_height - bottom_panel + 10) + i * 60)
+
 
 running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
             running = False
-            
+
     clock.tick(FPS)
-    drwa_bg()
+    draw_bg()
     draw_panel()
-    
+    knight_hp.draw(knight.health)
+    bandit1_hp.draw(bandit1.health)
+    bandit2_hp.draw(bandit2.health)
+
     knight.draw()
     knight.update()
     for bandit in bandits:
@@ -89,5 +123,5 @@ while running:
         bandit.update()
 
     pygame.display.update()
-        
+
 pygame.quit()
