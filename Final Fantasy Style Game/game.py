@@ -1,6 +1,6 @@
 import pygame
 import random
-
+from button import Button
 pygame.init()
 
 clock = pygame.time.Clock()
@@ -19,12 +19,14 @@ font = pygame.font.SysFont("Times New Roman", 26)
 bg_img = pygame.image.load("img/Background/background.png").convert_alpha()
 panel_img = pygame.image.load("img/Icons/panel.png").convert_alpha()
 sword_img = pygame.image.load("img/Icons/sword.png").convert_alpha()
+potion_img = pygame.image.load("img/Icons/potion.png").convert_alpha()
 
 # game variables
 current_fighter = 1
 total_fighters = 3
 action_cooldown = 0
 action_wait_time = 90
+potion_effect = 15
 attack = False
 potion = False
 clicked = False
@@ -37,7 +39,7 @@ class Fighter:
         self.health = hp
         self.strength = strength
         self.start_potion = potions
-        self.potion = potions
+        self.potions = potions
         self.alive = True
         self.animation_list = []
         self.frame_index = 0
@@ -114,6 +116,8 @@ knight_hp = HealthBar(100, window_height - bottom_panel + 40, knight.health, kni
 bandit1_hp = HealthBar(550, window_height - bottom_panel + 40, bandit1.health, bandit1.max_hp)
 bandit2_hp = HealthBar(550, window_height - bottom_panel + 100, bandit2.health, bandit2.max_hp)
 
+potion_btn = Button(window, 100, window_height - bottom_panel + 70, potion_img, 64, 64)
+
 
 def draw_text(text, text_font, color, x, y):
     img = text_font.render(text, True, color)
@@ -168,7 +172,11 @@ while running:
             if clicked:
                 attack = True
                 target = bandits[index]
-        
+
+    if potion_btn.draw():
+        potion = True
+    draw_text(str(knight.potions), font, "red", 150, window_height - bottom_panel + 70)
+
     if knight.alive:
         if current_fighter == 1:
             action_cooldown += 1
@@ -177,6 +185,16 @@ while running:
                     knight.attack(target)
                     current_fighter += 1
                     action_cooldown = 0
+                if potion:
+                    if knight.potions > 0:
+                        if knight.max_hp - knight.health > potion_effect:
+                            heal_amount = potion_effect
+                        else:
+                            heal_amount = knight.max_hp - knight.health
+                        knight.health += heal_amount
+                        knight.potions -= 1
+                        current_fighter += 1
+                        action_cooldown = 0
 
     for idx, bandit in enumerate(bandits):
         if current_fighter == idx + 2:
