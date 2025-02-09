@@ -86,7 +86,9 @@ class Fighter:
         if target.health < 0:
             target.health = 0
             target.alive = False
-        
+
+        damage_text = DamageText(target.rect.centerx, target.rect.y, str(dmg), "red")
+        dmg_text_group.add(damage_text)
         self.action = 1
         self.frame_index = 0
         self.update_timer = pygame.time.get_ticks()
@@ -105,6 +107,23 @@ class HealthBar:
         pygame.draw.rect(window, "red", (self.x, self.y, 150, 20))
         pygame.draw.rect(window, "green", (self.x, self.y, 150 * ratio, 20))
 
+
+class DamageText(pygame.sprite.Sprite):
+    def __init__(self, x, y, damage, color):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = font.render(damage, True, color)
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+        self.counter = 0
+
+    def update(self):
+        self.rect.y -= 1
+        self.counter += 1
+        if self.counter > 30:
+            self.kill()
+
+
+dmg_text_group = pygame.sprite.Group()
 
 knight = Fighter(200, 260, "Knight", 30, 10, 3)
 bandit1 = Fighter(550, 270, "Bandit", 20, 6, 1)
@@ -160,6 +179,8 @@ while running:
         bandit.draw()
         bandit.update()
 
+    dmg_text_group.update()
+    dmg_text_group.draw(window)
     attack = False
     potion = False
     target = None
@@ -192,6 +213,8 @@ while running:
                         else:
                             heal_amount = knight.max_hp - knight.health
                         knight.health += heal_amount
+                        heal_text = DamageText(knight.rect.centerx, knight.rect.y, str(heal_amount), "green")
+                        dmg_text_group.add(heal_text)
                         knight.potions -= 1
                         current_fighter += 1
                         action_cooldown = 0
@@ -207,6 +230,8 @@ while running:
                         else:
                             heal_amount = bandit.max_hp - bandit.health
                         bandit.health += heal_amount
+                        heal_text = DamageText(bandit.rect.centerx, bandit.rect.y, str(heal_amount), "green")
+                        dmg_text_group.add(heal_text)
                         bandit.potions -= 1
                         current_fighter += 1
                         action_cooldown = 0
