@@ -22,3 +22,5 @@ class Button:
 
         self.surf.blit(self.image, self.rect)
         return action
+
+# END OF THE GAME

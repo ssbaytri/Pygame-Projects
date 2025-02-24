@@ -314,3 +314,5 @@ while running:
     pygame.display.update()
 
 pygame.quit()
+
+# END OF THE GAME
