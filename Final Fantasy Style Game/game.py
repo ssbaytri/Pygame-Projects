@@ -45,15 +45,31 @@ class Fighter:
         self.frame_index = 0
         self.action = 0  # 0:idle, 1:attack, 2:hurt, 3:dead
         self.update_timer = pygame.time.get_ticks()
+        # idle sprites
         tmp_list = []
         for i in range(8):
             img = pygame.image.load(f"img/{self.name}/Idle/{i}.png").convert_alpha()
             img = pygame.transform.scale(img, (img.get_width() * 3, img.get_height() * 3))
             tmp_list.append(img)
         self.animation_list.append(tmp_list)
+        # attack sprites
         tmp_list = []
         for i in range(8):
             img = pygame.image.load(f"img/{self.name}/Attack/{i}.png").convert_alpha()
+            img = pygame.transform.scale(img, (img.get_width() * 3, img.get_height() * 3))
+            tmp_list.append(img)
+        self.animation_list.append(tmp_list)
+        # hurt sprites
+        tmp_list = []
+        for i in range(3):
+            img = pygame.image.load(f"img/{self.name}/Hurt/{i}.png").convert_alpha()
+            img = pygame.transform.scale(img, (img.get_width() * 3, img.get_height() * 3))
+            tmp_list.append(img)
+        self.animation_list.append(tmp_list)
+        # dead sprites
+        tmp_list = []
+        for i in range(10):
+            img = pygame.image.load(f"img/{self.name}/Death/{i}.png").convert_alpha()
             img = pygame.transform.scale(img, (img.get_width() * 3, img.get_height() * 3))
             tmp_list.append(img)
         self.animation_list.append(tmp_list)
@@ -71,7 +87,10 @@ class Fighter:
             self.update_timer = pygame.time.get_ticks()
             self.frame_index += 1
         if self.frame_index >= len(self.animation_list[self.action]):
-            self.idle()
+            if self.action == 3:
+                self.frame_index = len(self.animation_list[self.action]) - 1
+            else:
+                self.idle()
             
     def idle(self):
         self.action = 0
@@ -82,14 +101,26 @@ class Fighter:
         randd = random.randint(-5, 5)
         dmg = self.strength + randd
         target.health -= dmg
+        target.hurt()
         
         if target.health < 0:
             target.health = 0
             target.alive = False
+            target.death()
 
         damage_text = DamageText(target.rect.centerx, target.rect.y, str(dmg), "red")
         dmg_text_group.add(damage_text)
         self.action = 1
+        self.frame_index = 0
+        self.update_timer = pygame.time.get_ticks()
+    
+    def hurt(self):
+        self.action = 2
+        self.frame_index = 0
+        self.update_timer = pygame.time.get_ticks()
+        
+    def death(self):
+        self.action = 3
         self.frame_index = 0
         self.update_timer = pygame.time.get_ticks()
 
@@ -190,7 +221,7 @@ while running:
         if bandit.rect.collidepoint(pos):
             pygame.mouse.set_visible(False)
             window.blit(sword_img, pos)
-            if clicked:
+            if clicked and bandit.alive:
                 attack = True
                 target = bandits[index]
 
