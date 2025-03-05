@@ -7,9 +7,22 @@ window_width, window_height = 600, 600
 
 window = pygame.display.set_mode((window_width, window_height))
 pygame.display.set_caption("Breakout")
+clock = pygame.time.Clock()
+FPS = 60
 
 cols = 6
 rows = 6
+
+BACKGROUND_COLOR = (10, 20, 50)
+PADDLE_COLOR = (240, 240, 240)
+PADDLE_OUTLINE = (80, 80, 80)
+
+blue = (50, 150, 255)
+teal = (50, 255, 150)
+red = (255, 50, 50)
+
+BLOCK_OUTLINE = (10, 20, 50)
+
 
 class wall:
     def __init__(self):
@@ -39,26 +52,57 @@ class wall:
         for row in self.blocks:
             for block in row:
                 if block[1] == 3:
-                    color = "blue"
+                    color = blue
                 elif block[1] == 2:
-                    color = "green"
+                    color = teal
                 elif block[1] == 1:
-                    color = "red"
+                    color = red
                 pygame.draw.rect(window, color, block[0])
-                pygame.draw.rect(window, "black", block[0], 2)
+                pygame.draw.rect(window, BLOCK_OUTLINE, block[0], 2)
+
+
+class paddle:
+    def __init__(self):
+        self.width = int(window_width / cols)
+        self.height = 20
+        self.x = int((window_width / 2) - (self.width / 2))
+        self.y = window_height - (self.height * 2)
+        self.speed = 10
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+        self.direction = 0
+        
+    def move(self):
+        self.direction = 0
+        keys = pygame.key.get_pressed()
+        if keys[K_LEFT] and self.rect.left > 0:
+            self.direction = -1
+            self.rect.x -= self.speed
+        if keys[K_RIGHT] and self.rect.right < window_width:
+            self.direction = 1
+            self.rect.x += self.speed
+    
+    def draw(self):
+        pygame.draw.rect(window, PADDLE_COLOR, self.rect)
+        pygame.draw.rect(window, PADDLE_OUTLINE, self.rect, 3)
 
 wall = wall()
 wall.create_walls()
+
+player_paddle = paddle()
 
 running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
             running = False
-            
-            
-    window.fill("black")
+                
+    window.fill(BACKGROUND_COLOR)
+    
     wall.draw_walls()
+    player_paddle.draw()
+    player_paddle.move()
+    
     pygame.display.update()
+    clock.tick(FPS)
 
 pygame.quit()
