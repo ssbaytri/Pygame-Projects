@@ -84,11 +84,42 @@ class paddle:
     def draw(self):
         pygame.draw.rect(window, PADDLE_COLOR, self.rect)
         pygame.draw.rect(window, PADDLE_OUTLINE, self.rect, 3)
+        
+        
+class Ball:
+    def __init__(self, x, y):
+        self.ball_rad = 10
+        self.x = x - self.ball_rad
+        self.y = y
+        self.rect = Rect(self.x, self.y, self.ball_rad * 2, self.ball_rad * 2)
+        self.speed_x = 4
+        self.speed_y = -4
+        self.game_over = 0
+        
+    def draw(self):
+        pygame.draw.circle(window, PADDLE_COLOR, (self.rect.x + self.ball_rad, self.rect.y + self.ball_rad), self.ball_rad)
+        pygame.draw.circle(window, PADDLE_OUTLINE, (self.rect.x + self.ball_rad, self.rect.y + self.ball_rad), self.ball_rad, 3)
+        
+    def move(self):
+        if self.rect.left < 0 or self.rect.right > window_width:
+            self.speed_x *= -1
+        if self.rect.top < 0:
+            self.speed_y *= -1
+        if self.rect.bottom > window_height:
+            self.game_over = -1
+            
+        self.rect.x += self.speed_x
+        self.rect.y += self.speed_y
+        
+        return self.game_over
+
 
 wall = wall()
 wall.create_walls()
 
 player_paddle = paddle()
+
+ball = Ball(player_paddle.x + (player_paddle.width // 2), player_paddle.y - player_paddle.height)
 
 running = True
 while running:
@@ -101,6 +132,8 @@ while running:
     wall.draw_walls()
     player_paddle.draw()
     player_paddle.move()
+    ball.draw()
+    ball.move()
     
     pygame.display.update()
     clock.tick(FPS)
