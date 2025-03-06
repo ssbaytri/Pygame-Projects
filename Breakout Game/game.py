@@ -94,6 +94,7 @@ class Ball:
         self.rect = Rect(self.x, self.y, self.ball_rad * 2, self.ball_rad * 2)
         self.speed_x = 4
         self.speed_y = -4
+        self.max_speed = 5
         self.game_over = 0
         
     def draw(self):
@@ -101,12 +102,26 @@ class Ball:
         pygame.draw.circle(window, PADDLE_OUTLINE, (self.rect.x + self.ball_rad, self.rect.y + self.ball_rad), self.ball_rad, 3)
         
     def move(self):
+        collision_thresh = 5
+
         if self.rect.left < 0 or self.rect.right > window_width:
             self.speed_x *= -1
         if self.rect.top < 0:
             self.speed_y *= -1
         if self.rect.bottom > window_height:
             self.game_over = -1
+            
+        if self.rect.colliderect(player_paddle):
+            if abs(self.rect.bottom - player_paddle.rect.top) < collision_thresh and self.speed_y > 0:
+                self.speed_y *= -1
+                self.speed_x += player_paddle.direction
+                if self.speed_x > self.max_speed:
+                    self.speed_x = self.max_speed
+                elif self.speed_x < -self.max_speed:
+                    self.speed_x = -self.max_speed
+            else:
+                self.speed_x *= -1
+                
             
         self.rect.x += self.speed_x
         self.rect.y += self.speed_y
