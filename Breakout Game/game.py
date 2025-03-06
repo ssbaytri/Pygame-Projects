@@ -9,9 +9,12 @@ window = pygame.display.set_mode((window_width, window_height))
 pygame.display.set_caption("Breakout")
 clock = pygame.time.Clock()
 FPS = 60
+game_font = pygame.font.SysFont("Arial", 30)
 
 cols = 6
 rows = 6
+live_ball = False
+game_over = 0
 
 BACKGROUND_COLOR = (10, 20, 50)
 PADDLE_COLOR = (240, 240, 240)
@@ -22,6 +25,13 @@ teal = (50, 255, 150)
 red = (255, 50, 50)
 
 BLOCK_OUTLINE = (10, 20, 50)
+
+TEXT_COLOR = (78, 81, 139)
+
+
+def draw_text(text, font, col, x, y):
+    img = font.render(text, True, col)
+    window.blit(img, (x, y))
 
 
 class wall:
@@ -63,6 +73,9 @@ class wall:
 
 class paddle:
     def __init__(self):
+        self.reset()
+        
+    def reset(self):
         self.width = int(window_width / cols)
         self.height = 20
         self.x = int((window_width / 2) - (self.width / 2))
@@ -70,7 +83,7 @@ class paddle:
         self.speed = 10
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
         self.direction = 0
-        
+
     def move(self):
         self.direction = 0
         keys = pygame.key.get_pressed()
@@ -88,10 +101,13 @@ class paddle:
         
 class Ball:
     def __init__(self, x, y):
+        self.reset(x, y)
+        
+    def reset(self, x, y):
         self.ball_rad = 10
         self.x = x - self.ball_rad
         self.y = y
-        self.rect = Rect(self.x, self.y, self.ball_rad * 2, self.ball_rad * 2)
+        self.rect = pygame.Rect(self.x, self.y, self.ball_rad * 2, self.ball_rad * 2)
         self.speed_x = 4
         self.speed_y = -4
         self.max_speed = 5
@@ -173,14 +189,32 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
             running = False
+        if (event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE) and not live_ball:
+            live_ball = True
+            ball.reset(player_paddle.x + (player_paddle.width // 2), player_paddle.y - player_paddle.height)
+            player_paddle.reset()
+            wall.create_walls()
                 
     window.fill(BACKGROUND_COLOR)
     
     wall.draw_walls()
     player_paddle.draw()
-    player_paddle.move()
     ball.draw()
-    ball.move()
+    if live_ball:
+        player_paddle.move()
+        game_over = ball.move()
+        if game_over != 0:
+            live_ball = False
+            
+    if not live_ball:
+        if game_over == 0:
+            draw_text("Press Space to Start", game_font, TEXT_COLOR, 160, window_height // 2 + 100)
+        elif game_over == 1:
+            draw_text("You Won!", game_font, TEXT_COLOR, 240, window_height // 2 + 50)
+            draw_text("Press Space to Start", game_font, TEXT_COLOR, 160, window_height // 2 + 100)
+        elif game_over == -1:
+            draw_text("You Lost!", game_font, TEXT_COLOR, 240, window_height // 2 + 50)
+            draw_text("Press Space to Start", game_font, TEXT_COLOR, 160, window_height // 2 + 100)
     
     pygame.display.update()
     clock.tick(FPS)
