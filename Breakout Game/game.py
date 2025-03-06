@@ -103,7 +103,39 @@ class Ball:
         
     def move(self):
         collision_thresh = 5
-
+        
+        wall_destoyed = 1
+        row_count = 0
+        for row in wall.blocks:
+            block_count = 0
+            for block in row:
+                if self.rect.colliderect(block[0]):
+                    # top collision
+                    if abs(self.rect.bottom - block[0].top) < collision_thresh and self.speed_y > 0:
+                        self.speed_y *= -1
+                    # bottom collision
+                    if abs(self.rect.top - block[0].bottom) < collision_thresh and self.speed_y < 0:
+                        self.speed_y *= -1
+                    # left collision
+                    if abs(self.rect.right - block[0].left) < collision_thresh and self.speed_x > 0:
+                        self.speed_x *= -1
+                    # right collision
+                    if abs(self.rect.left - block[0].right) < collision_thresh and self.speed_x < 0:
+                        self.speed_x *= -1
+                    
+                    if wall.blocks[row_count][block_count][1] > 1:
+                        wall.blocks[row_count][block_count][1] -= 1
+                    else:
+                        wall.blocks[row_count][block_count][0] = (0, 0, 0, 0)
+                        
+                if wall.blocks[row_count][block_count][0] != (0, 0, 0, 0):
+                    wall_destoyed = 0
+                block_count += 1
+            row_count += 1
+            
+        if wall_destoyed == 1:
+            self.game_over = 1
+        
         if self.rect.left < 0 or self.rect.right > window_width:
             self.speed_x *= -1
         if self.rect.top < 0:
