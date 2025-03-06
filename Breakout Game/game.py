@@ -220,3 +220,5 @@ while running:
     clock.tick(FPS)
 
 pygame.quit()
+
+#---------------------------------End Of The Game---------------------------------
