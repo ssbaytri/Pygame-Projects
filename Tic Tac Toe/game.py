@@ -25,7 +25,12 @@ def draw_markers():
         y_pos = 0
         for y in x:
             if y == 1:
-                pygame.draw.line(window, green, (x_pos * 100 + 15, y_pos * 100 + 15))
+                pygame.draw.line(window, green, (x_pos * 100 + 15, y_pos * 100 + 15), (x_pos * 100 + 85, y_pos * 100 + 85), line_width)
+                pygame.draw.line(window, green, (x_pos * 100 + 15, y_pos * 100 + 85), (x_pos * 100 + 85, y_pos * 100 + 15), line_width)
+            if y == -1:
+                pygame.draw.circle(window, red, (x_pos * 100 + 50, y_pos * 100 + 50), 38, line_width)
+            y_pos += 1
+        x_pos += 1
 
 
 def draw_grid():
@@ -53,6 +58,7 @@ while running:
                 player *= -1
 
     draw_grid()
+    draw_markers()
 
     pygame.display.update()
 
