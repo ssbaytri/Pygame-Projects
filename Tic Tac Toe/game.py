@@ -1,6 +1,7 @@
 import pygame
 from pygame.locals import *
 
+pygame.init()
 window_width, window_height = 300, 300
 window = pygame.display.set_mode((window_width, window_height))
 pygame.display.set_caption("Tic Tac Toe")
@@ -15,6 +16,10 @@ game_over = False
 
 green = (0, 255, 0)
 red = (255, 0, 0)
+font_bg_color = (45, 55, 90)
+
+font = pygame.font.SysFont(None, 40)
+font_color = (220, 230, 255)
 
 for i in range(3):
     row = [0] * 3
@@ -72,6 +77,17 @@ def draw_grid():
         pygame.draw.line(window, grid_color, (x * 100, 0), (x * 100, window_height), line_width)
 
 
+def draw_winner(winner):
+    win_text = "Player " + str(winner) + " Won!"
+    win_img = font.render(win_text, True, font_color)
+    pygame.draw.rect(window, font_bg_color, (window_width // 2 - 100, window_height // 2 - 60, 200, 50))
+    window.blit(win_img, (window_width // 2 - 90, window_height // 2 - 50))
+
+    restart_txt = "Play Again?"
+    restart_img = font.render(restart_txt, True, font_color)
+    window.blit(restart_img, (window_width // 2 - 80, window_height // 2 + 10))
+
+
 running = True
 while running:
     for event in pygame.event.get():
@@ -91,6 +107,9 @@ while running:
 
     draw_grid()
     draw_markers()
+
+    if game_over:
+        draw_winner(winner)
 
     pygame.display.update()
 
