@@ -10,6 +10,8 @@ markers = []
 clicked = False
 pos = []
 player = 1
+winner = 1
+game_over = False
 
 green = (0, 255, 0)
 red = (255, 0, 0)
@@ -17,6 +19,34 @@ red = (255, 0, 0)
 for i in range(3):
     row = [0] * 3
     markers.append(row)
+
+
+def check_winner():
+    global winner
+    global game_over
+    y_pos = 0
+    for x in markers:
+        if sum(x) == 3:
+            winner = 1
+            game_over = True
+        if sum(x) == -3:
+            winner = 2
+            game_over = True
+
+        if markers[0][y_pos] + markers[1][y_pos] + markers[2][y_pos] == 3:
+            winner = 1
+            game_over = True
+        if markers[0][y_pos] + markers[1][y_pos] + markers[2][y_pos] == -3:
+            winner = 2
+            game_over = True
+        y_pos += 1
+
+    if markers[0][0] + markers[1][1] + markers[2][2] == 3 or markers[2][0] + markers[1][1] + markers[0][2] == 3:
+        winner = 1
+        game_over = True
+    if markers[0][0] + markers[1][1] + markers[2][2] == -3 or markers[2][0] + markers[1][1] + markers[0][2] == -3:
+        winner = 2
+        game_over = True
 
 
 def draw_markers():
@@ -47,15 +77,17 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
             running = False
-        if event.type == pygame.MOUSEBUTTONDOWN and not clicked:
-            clicked = True
-        if event.type == pygame.MOUSEBUTTONUP and clicked:
-            clicked = False
-            pos = pygame.mouse.get_pos()
-            cell_x, cell_y = pos[0], pos[1]
-            if markers[cell_x // 100][cell_y // 100] == 0:
-                markers[cell_x // 100][cell_y // 100] = player
-                player *= -1
+        if not game_over:
+            if event.type == pygame.MOUSEBUTTONDOWN and not clicked:
+                clicked = True
+            if event.type == pygame.MOUSEBUTTONUP and clicked:
+                clicked = False
+                pos = pygame.mouse.get_pos()
+                cell_x, cell_y = pos[0], pos[1]
+                if markers[cell_x // 100][cell_y // 100] == 0:
+                    markers[cell_x // 100][cell_y // 100] = player
+                    player *= -1
+                    check_winner()
 
     draw_grid()
     draw_markers()
