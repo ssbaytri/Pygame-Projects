@@ -14,5 +14,5 @@ class PhysicEntity:
         self.pos[0] += frame_movement[0]
         self.pos[1] += frame_movement[1]
         
-    def runder(self, surf):
-        surf.blit(self.game.assets['player', self.pos])
+    def render(self, surf):
+        surf.blit(self.game.assets['player'], self.pos)
