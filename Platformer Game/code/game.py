@@ -9,6 +9,7 @@ class Game:
     def __init__(self):
         pygame.init()
         self.window = pygame.display.set_mode((WIDTH, HEIGHT))
+        self.display = pygame.Surface((320, 240))
         pygame.display.set_caption("Platformer Game")
         self.clock = pygame.time.Clock()
         
@@ -21,10 +22,9 @@ class Game:
 
     def run(self):
         while True:
-            self.window.fill((0, 0, 0))
-            
+            self.display.fill((12, 22, 89))
             self.player.update((0, self.movement[1] - self.movement[0]))
-            self.player.render(self.window)
+            self.player.render(self.display)
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
@@ -41,6 +41,7 @@ class Game:
                     if event.key == pygame.K_DOWN:
                         self.movement[1] = 0
 
+            self.window.blit(pygame.transform.scale(self.display, self.window.get_size()), (0, 0))
             pygame.display.update()
             self.clock.tick(FPS)
 
