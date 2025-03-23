@@ -1,22 +1,25 @@
 import pygame, sys
 
-pygame.init()
-
 WIDTH, HEIGHT = 640, 480
 FPS = 60
 
-window = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Platformer Game")
-clock = pygame.time.Clock()
+class Game:
+    def __init__(self):
+        pygame.init()
+        self.window = pygame.display.set_mode((WIDTH, HEIGHT))
+        pygame.display.set_caption("Platformer Game")
+        self.clock = pygame.time.Clock()
 
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-            running = False
+    def run(self):
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                    pygame.quit()
+                    sys.exit()
 
-    pygame.display.update()
-    clock.tick(FPS)
+            pygame.display.update()
+            self.clock.tick(FPS)
 
-pygame.quit()
-sys.exit()
+if __name__ == "__main__":
+    game = Game()
+    game.run()
