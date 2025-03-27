@@ -12,7 +12,13 @@ class Tilemap:
             self.tilemap["10;" + str(i + 5)] = {"type": "stone", "variant": 1, "pos": (10, i + 5)}
 
     def tiles_arround(self, pos):
-        tile_loc = (int(pos[0] // self.tile_size))
+        tiles = []
+        tile_loc = (int(pos[0] // self.tile_size), int(pos[1] // self.tile_size))
+        for offset in NEIGHBORS_OFFSETS:
+            check_loc = str(tile_loc[0] + offset[0]) + ";" + str(tile_loc[1] + offset[1])
+            if check_loc in self.tilemap:
+                tiles.append(self.tilemap[check_loc])
+        return tiles
 
     def render(self, surf):
         for tile in self.offgrid:
