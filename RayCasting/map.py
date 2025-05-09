@@ -1,6 +1,7 @@
 import pygame
 from settings import *
 
+
 class Map:
     def __init__(self):
         self.grid = [
@@ -15,6 +16,9 @@ class Map:
             [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         ]
+
+    def has_wall_at(self, x, y):
+        return self.grid[int(y // TILE_SIZE)][int(x // TILE_SIZE)]
 
     def render(self, screen):
         for y in range(ROWS):
