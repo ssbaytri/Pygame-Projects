@@ -4,6 +4,7 @@ from map import Map
 from player import Player
 
 screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+clock = pygame.time.Clock()
 game_map = Map()
 player = Player()
 
@@ -14,7 +15,10 @@ while True:
             exit()
 
     screen.fill("black")
+
+    player.update()
     game_map.render(screen)
     player.render(screen)
 
+    clock.tick(FPS)
     pygame.display.update()
