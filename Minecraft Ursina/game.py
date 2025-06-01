@@ -1,6 +1,11 @@
 from ursina import *
 from ursina.prefabs.first_person_controller import FirstPersonController
 
+def input(key):
+    if key == 'escape':
+        application.quit()
+        
+
 class Voxel(Button):
 	def __init__(self, position=(0, 0, 0)):
 		super().__init__(
