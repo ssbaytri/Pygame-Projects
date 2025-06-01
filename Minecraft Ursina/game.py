@@ -1,28 +1,35 @@
 from ursina import *
 from ursina.prefabs.first_person_controller import FirstPersonController
 
-def input(key):
-    if key == 'escape':
-        application.quit()
-        
 
 class Voxel(Button):
-	def __init__(self, position=(0, 0, 0)):
-		super().__init__(
-			parent=scene,
-			position=position,
-			model='cube',
-			origin_y=0.5,
-			texture='white_cube',
-			color=color.white,
-			highlight_color=color.lime
-		)
+    def __init__(self, position=(0, 0, 0)):
+        super().__init__(
+            parent=scene,
+            position=position,
+            model='cube',
+            origin_y=0.5,
+            texture='white_cube',
+            color=color.white,
+            highlight_color=color.lime
+        )
+
+    def input(self, key):
+        if self.hovered:
+            if key == "left mouse down":
+                voxel = Voxel(position=self.position + mouse.normal)
+            if key == "right mouse down":
+                destroy(self)
+        if key == "escape":
+            application.quit()
 
 
 app = Ursina()
 
-for z in range(10):
-	for x in range(10):
-		voxel = Voxel(position=(z, 0, x))
+for z in range(20):
+    for x in range(20):
+        voxel = Voxel(position=(x, 0, z))
+
+player = FirstPersonController()
 
 app.run()
