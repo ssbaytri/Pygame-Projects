@@ -9,6 +9,7 @@ grass_texture = load_texture("assets/grass_block.png")
 stone_texture = load_texture("assets/stone_block.png")
 brick_texture = load_texture("assets/brick_block.png")
 dirt_texture = load_texture("assets/dirt_block.png")
+sky_texture = load_texture("assets/skybox.png")
 textures = [grass_texture, stone_texture, brick_texture, dirt_texture]
 block_pick = 1
 
@@ -44,10 +45,22 @@ class Voxel(Button):
             application.quit()
 
 
+class Sky(Entity):
+    def __init__(self):
+        super().__init__(
+            parent=scene,
+            model="sphere",
+            texture=sky_texture,
+            scale=150,
+            double_sided=True
+        )
+
+
 for z in range(20):
     for x in range(20):
         voxel = Voxel(position=(x, 0, z))
 
 player = FirstPersonController()
+sky = Sky()
 
 app.run()
