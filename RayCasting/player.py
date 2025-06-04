@@ -11,8 +11,8 @@ class Player:
         self.turn_dir = 0
         self.walk_dir = 0
         self.rot_angle = math.pi / 4
-        self.mov_speed = 2.5
-        self.rot_speed = 2 * (math.pi / 180)
+        self.mov_speed = 1
+        self.rot_speed = 1.5 * (math.pi / 180)
 
     def update(self):
         keys = pygame.key.get_pressed()

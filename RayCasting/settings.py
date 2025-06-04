@@ -1,6 +1,6 @@
 import math
 
-FPS = 90
+FPS = 60
 TILE_SIZE = 32
 
 ROWS = 10
