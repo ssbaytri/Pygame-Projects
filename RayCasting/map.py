@@ -18,7 +18,7 @@ class Map:
         ]
 
     def has_wall_at(self, x, y):
-        return self.grid[int(y // TILE_SIZE)][int(x // TILE_SIZE)]
+        return self.grid[int(y // TILE_SIZE)][int(x // TILE_SIZE)] == 1
 
     def render(self, screen):
         for y in range(ROWS):
