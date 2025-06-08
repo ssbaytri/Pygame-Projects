@@ -1,15 +1,21 @@
 import pygame
-from setting import *
+from settings import *
 from ray import Ray
 
 
 class RayCaster:
-    def __int__(self, player):
+    def __init__(self, player):
         self.rays = []
         self.player = player
 
     def cast_rays(self):
-        pass
+        self.rays = []
+        ray_angle = (self.player.rot_angle - FOV / 2)
+        for i in range(NUMS_RAYS):
+            ray = Ray(ray_angle, self.player)
+            ray.cast()
+            self.rays.append(ray)
+            ray_angle += FOV / NUMS_RAYS
 
     def render(self, screen):
         for ray in self.rays:
