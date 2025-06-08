@@ -1,13 +1,16 @@
 from settings import *
+from game import Game
 from sys import exit
 import pygame
 
-class Game:
+class Main:
     def __init__(self):
         pygame.init()
         self.display = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         pygame.display.set_caption("Tetris")
         self.clock = pygame.time.Clock()
+        
+        self.game = Game()
         
     def run(self):
         while True:
@@ -17,9 +20,12 @@ class Game:
                     exit()
                     
             self.display.fill(GRAY)
+            
+            self.game.run()
+            
             pygame.display.update()
             self.clock.tick(60)
         
 if __name__ == "__main__":
-    game = Game()
-    game.run()
+    main = Main()
+    main.run()
