@@ -30,7 +30,6 @@ class Player:
             self.walkDir = -1
 
         self.rot_angle += self.turnDir * self.rot_speed
-        self.rot_angle %= 2 * math.pi
 
         move_step = self.walkDir * self.move_speed
         self.x += math.cos(self.rot_angle) * move_step

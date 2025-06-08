@@ -8,7 +8,7 @@ screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 clock = pygame.time.Clock()
 game_map = Map()
 player = Player()
-ray_caster = RayCaster(player)
+ray_caster = RayCaster(player, game_map)
 
 while True:
     for event in pygame.event.get():
