@@ -3,7 +3,7 @@ import pygame
 # Game size 
 COLUMNS = 10
 ROWS = 20
-CELL_SIZE = 40
+CELL_SIZE = 30
 GAME_WIDTH, GAME_HEIGHT = COLUMNS * CELL_SIZE, ROWS * CELL_SIZE
 
 # side bar size 
