@@ -1,5 +1,5 @@
 from settings import *
-from game import Game
+from game import Game, Block
 from score import Score
 from preview import Preview
 from sys import exit
@@ -14,7 +14,7 @@ class Main:
         self.game = Game()
         self.score = Score()
         self.preview = Preview()
-        
+                
     def run(self):
         while True:
             for event in pygame.event.get():
