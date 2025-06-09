@@ -1,5 +1,6 @@
 from settings import *
 from game import Game
+from score import Score
 from sys import exit
 import pygame
 
@@ -11,6 +12,7 @@ class Main:
         self.clock = pygame.time.Clock()
         
         self.game = Game()
+        self.score = Score()
         
     def run(self):
         while True:
@@ -22,6 +24,7 @@ class Main:
             self.display.fill(GRAY)
             
             self.game.run()
+            self.score.run()
             
             pygame.display.update()
             self.clock.tick(60)
