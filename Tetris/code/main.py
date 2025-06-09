@@ -1,8 +1,8 @@
 from settings import *
 from game import Game
 from score import Score
+from preview import Preview
 from sys import exit
-import pygame
 
 class Main:
     def __init__(self):
@@ -13,6 +13,7 @@ class Main:
         
         self.game = Game()
         self.score = Score()
+        self.preview = Preview()
         
     def run(self):
         while True:
@@ -25,6 +26,7 @@ class Main:
             
             self.game.run()
             self.score.run()
+            self.preview.run()
             
             pygame.display.update()
             self.clock.tick(60)
