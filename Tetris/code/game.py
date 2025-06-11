@@ -17,7 +17,8 @@ class Game:
         self.tetromino = Tetromino(choice(list(TETROMINOS.keys())), self.sprites)
         
         self.timers = {
-            "vertical_move": Timer(UPDATE_START_SPEED, True, self.move_down)
+            "vertical_move": Timer(UPDATE_START_SPEED, True, self.move_down),
+            "horizontal_move": Timer(MOVE_WAIT_TIME)
         }
         self.timers["vertical_move"].activate()
         
@@ -36,9 +37,21 @@ class Game:
             
         self.surf.blit(self.line_surf, (0, 0))
         
+    def input(self):
+        keys = pygame.key.get_pressed()
+        
+        if not self.timers["horizontal_move"].active:
+            if keys[pygame.K_LEFT]:
+                self.tetromino.move_horizontally(-1)
+                self.timers["horizontal_move"].activate()
+            if keys[pygame.K_RIGHT]:
+                self.tetromino.move_horizontally(1)
+                self.timers["horizontal_move"].activate()
+        
     def run(self):
         self.timer_update()
         self.sprites.update()
+        self.input()
         self.surf.fill(GRAY)
         self.sprites.draw(self.surf)
         self.draw_grid()
@@ -57,6 +70,10 @@ class Tetromino:
     def move_down(self):
         for block in self.blocks:
             block.pos.y += 1
+            
+    def move_horizontally(self, direction):
+        for block in self.blocks:
+            block.pos.x += direction
 
 
 class Block(pygame.sprite.Sprite):
