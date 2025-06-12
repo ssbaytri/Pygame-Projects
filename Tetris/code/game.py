@@ -14,13 +14,16 @@ class Game:
         self.line_surf.set_colorkey((0, 255, 0))
         self.line_surf.set_alpha(120)
         
-        self.tetromino = Tetromino(choice(list(TETROMINOS.keys())), self.sprites)
+        self.tetromino = Tetromino(choice(list(TETROMINOS.keys())), self.sprites, self.create_new_tetromino)
         
         self.timers = {
             "vertical_move": Timer(UPDATE_START_SPEED, True, self.move_down),
             "horizontal_move": Timer(MOVE_WAIT_TIME)
         }
         self.timers["vertical_move"].activate()
+        
+    def create_new_tetromino(self):
+        self.tetromino = Tetromino(choice(list(TETROMINOS.keys())), self.sprites, self.create_new_tetromino)
         
     def timer_update(self):
         for timer in self.timers.values():
@@ -61,11 +64,13 @@ class Game:
         
 
 class Tetromino:
-    def __init__(self, shape, group):
+    def __init__(self, shape, group, create_new):
         self.block_pos = TETROMINOS[shape]["shape"]
         self.color = TETROMINOS[shape]["color"]
         
         self.blocks = [Block(group, pos, self.color) for pos in  self.block_pos]
+        
+        self.create_new_tetromino = create_new
         
     def next_move_horizontal_collide(self, direction):
         collision_list = [block.horizontal_collide(block.pos.x + direction) for block in self.blocks]
@@ -79,6 +84,8 @@ class Tetromino:
         if not self.next_move_vertical_collide():
             for block in self.blocks:
                 block.pos.y += 1
+        else:
+            self.create_new_tetromino()
             
     def move_horizontally(self, direction):
         if not self.next_move_horizontal_collide(direction):
