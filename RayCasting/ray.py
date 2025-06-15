@@ -4,10 +4,12 @@ from settings import *
 
 def normalize(angle):
     angle = angle % (math.pi * 2)
-    if angle < 0:
+    if angle <= 0:
         angle = (2 * math.pi) + angle
     return angle
 
+def distance(x1, y1, x2, y2):
+    return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
 class Ray:
     def __init__(self, angle, player, map):
@@ -57,8 +59,58 @@ class Ray:
                 next_horizontal_x += xa
                 next_horizontal_y += ya
 
-        self.wall_hit_x = horizontal_hit_x
-        self.wall_hit_y = horizontal_hit_y
+        # self.wall_hit_x = horizontal_hit_x
+        # self.wall_hit_y = horizontal_hit_y
+
+        found_vertical_wall = False
+        vertical_hit_x = 0
+        vertical_hit_y = 0
+        
+        if self.is_facing_right:
+            first_intersection_x = ((self.player.x // TILE_SIZE) * TILE_SIZE) + TILE_SIZE
+        else:
+            first_intersection_x = ((self.player.x // TILE_SIZE) * TILE_SIZE) - 1
+            
+        first_intersection_y = self.player.y + (first_intersection_x - self.player.x) * math.tan(self.ray_angle)
+        
+        next_vertical_x = first_intersection_x
+        next_vertical_y = first_intersection_y
+        
+        if self.is_facing_right:
+            xa = TILE_SIZE
+        else:
+            xa = -TILE_SIZE
+        ya  = xa * math.tan(self.ray_angle)
+        while (0 <= next_vertical_x <= WINDOW_WIDTH and 0 <= next_vertical_y <= WINDOW_HEIGHT):
+            if self.map.has_wall_at(next_vertical_x, next_vertical_y):
+                found_vertical_wall = True
+                vertical_hit_x = next_vertical_x
+                vertical_hit_y = next_vertical_y
+                break
+            else:
+                next_vertical_x += xa
+                next_vertical_y += ya
+                
+        # DISTANCE CALCULATION
+        horizontal_dist = 0
+        vertical_dist = 0
+        
+        if found_horizontal_wall:
+            horizontal_dist = distance(self.player.x, self.player.y, horizontal_hit_x, horizontal_hit_y)
+        else:
+            horizontal_dist = 9999
+        if found_vertical_wall:
+            vertical_dist = distance(self.player.x, self.player.y, vertical_hit_x, vertical_hit_y)
+        else:
+            vertical_dist = 9999
+        
+        if horizontal_dist < vertical_dist:
+            self.wall_hit_x = horizontal_hit_x
+            self.wall_hit_y = horizontal_hit_y
+        else:
+            self.wall_hit_x = vertical_hit_x
+            self.wall_hit_y = vertical_hit_y
+        
 
     def render(self, screen):
         # pygame.draw.line(screen, "red", (self.player.x, self.player.y),
