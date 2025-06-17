@@ -3,6 +3,7 @@ from game import Game, Block
 from score import Score
 from preview import Preview
 from sys import exit
+from random import choice
 
 class Main:
     def __init__(self):
@@ -11,9 +12,16 @@ class Main:
         pygame.display.set_caption("Tetris")
         self.clock = pygame.time.Clock()
         
-        self.game = Game()
+        self.next_shapes = [choice(list(TETROMINOS.keys())) for _ in range(3)]
+        
+        self.game = Game(self.get_next_shape)
         self.score = Score()
-        self.preview = Preview()
+        self.preview = Preview(self.next_shapes)
+        
+    def get_next_shape(self):
+        next_shape = self.next_shapes.pop(0)
+        self.next_shapes.append(choice(list(TETROMINOS.keys())))
+        return next_shape
                 
     def run(self):
         while True:
@@ -26,7 +34,7 @@ class Main:
             
             self.game.run()
             self.score.run()
-            self.preview.run()
+            self.preview.run(self.next_shapes)
             
             pygame.display.update()
             self.clock.tick(60)

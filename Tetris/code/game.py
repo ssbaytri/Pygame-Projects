@@ -3,11 +3,13 @@ from timers import Timer
 from random import choice
 
 class Game:
-    def __init__(self):
+    def __init__(self, get_next_shape):
         self.surf = pygame.Surface((GAME_WIDTH, GAME_HEIGHT))
         self.display_surf = pygame.display.get_surface()
         self.rect = self.surf.get_rect(topleft=(PADDING, PADDING))
         self.sprites = pygame.sprite.Group()
+        
+        self.get_next_shape = get_next_shape
         
         self.line_surf = self.surf.copy()
         self.line_surf.fill((0, 255, 0))
@@ -15,7 +17,7 @@ class Game:
         self.line_surf.set_alpha(120)
         
         self.field_data = [[0 for _ in range(COLUMNS)]for _ in range(ROWS)]
-        self.tetromino = Tetromino(choice(list(TETROMINOS.keys())), self.sprites, self.create_new_tetromino, self.field_data)
+        self.tetromino = Tetromino(self.get_next_shape(), self.sprites, self.create_new_tetromino, self.field_data)
         
         self.timers = {
             "vertical_move": Timer(UPDATE_START_SPEED, True, self.move_down),
@@ -26,7 +28,7 @@ class Game:
         
     def create_new_tetromino(self):
         self.check_finished_lines()
-        self.tetromino = Tetromino(choice(list(TETROMINOS.keys())), self.sprites, self.create_new_tetromino, self.field_data)
+        self.tetromino = Tetromino(self.get_next_shape(), self.sprites, self.create_new_tetromino, self.field_data)
         
     def timer_update(self):
         for timer in self.timers.values():
