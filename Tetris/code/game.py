@@ -19,8 +19,11 @@ class Game:
         self.field_data = [[0 for _ in range(COLUMNS)]for _ in range(ROWS)]
         self.tetromino = Tetromino(self.get_next_shape(), self.sprites, self.create_new_tetromino, self.field_data)
         
+        self.down_speed = UPDATE_START_SPEED
+        self.down_speed_faster = self.down_speed * 0.3
+        self.down_pressed = False
         self.timers = {
-            "vertical_move": Timer(UPDATE_START_SPEED, True, self.move_down),
+            "vertical_move": Timer(self.down_speed, True, self.move_down),
             "horizontal_move": Timer(MOVE_WAIT_TIME),
             "rotate": Timer(ROTATE_WAIT_TIME)
         }
@@ -60,6 +63,14 @@ class Game:
             if keys[pygame.K_UP]:
                 self.tetromino.rotate()
                 self.timers["rotate"].activate()
+                
+        if not self.down_pressed and keys[pygame.K_DOWN]:
+            self.down_pressed = True
+            self.timers['vertical_move'].duration = self.down_speed_faster
+        
+        if self.down_pressed and not keys[pygame.K_DOWN]:
+            self.down_pressed = False
+            self.timers['vertical_move'].duration = self.down_speed
                 
     def check_finished_lines(self):
         delete_rows = []
