@@ -114,6 +114,8 @@ class Ray:
             self.wall_hit_x = vertical_hit_x
             self.wall_hit_y = vertical_hit_y
             self.distance = vertical_dist
+            
+        self.distance *= math.cos(self.player.rot_angle - self.ray_angle)
         
 
     def render(self, screen):
