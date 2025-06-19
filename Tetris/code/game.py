@@ -29,6 +29,17 @@ class Game:
         }
         self.timers["vertical_move"].activate()
         
+        self.curr_level = 1
+        self.curr_score = 0
+        self.curr_lines = 0
+        
+    def calc_score(self, lines_num):
+        self.curr_lines += lines_num
+        self.calc_score += SCORE_DATA[lines_num] * self.curr_level
+        
+        if self.curr_lines / 10 > self.curr_level:
+            self.curr_level += 1
+        
     def create_new_tetromino(self):
         self.check_finished_lines()
         self.tetromino = Tetromino(self.get_next_shape(), self.sprites, self.create_new_tetromino, self.field_data)
@@ -89,6 +100,8 @@ class Game:
             self.field_data = [[0 for _ in range(COLUMNS)] for _ in range(ROWS)]
             for block in self.sprites:
                 self.field_data[int(block.pos.y)][int(block.pos.x)] = block
+                
+        self.calc_score(len(delete_rows))
         
     def run(self):
         self.timer_update()
