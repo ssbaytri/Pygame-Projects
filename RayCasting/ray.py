@@ -26,6 +26,7 @@ class Ray:
         self.wall_hit_y = 0
         
         self.distance = 0
+        self.color = 255
 
     def cast(self):
         found_horizontal_wall = False
@@ -110,12 +111,15 @@ class Ray:
             self.wall_hit_x = horizontal_hit_x
             self.wall_hit_y = horizontal_hit_y
             self.distance = horizontal_dist
+
         else:
             self.wall_hit_x = vertical_hit_x
             self.wall_hit_y = vertical_hit_y
             self.distance = vertical_dist
             
         self.distance *= math.cos(self.player.rot_angle - self.ray_angle)
+        self.color *= (60 / self.distance)
+        self.color = 255 if self.color > 255 else self.color
         
 
     def render(self, screen):

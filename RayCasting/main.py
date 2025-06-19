@@ -10,13 +10,15 @@ game_map = Map()
 player = Player()
 ray_caster = RayCaster(player, game_map)
 
+bg_img = pygame.image.load("background.png")
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
             pygame.quit()
             exit()
 
-    screen.fill("black")
+    screen.blit(bg_img, (0, 0))
 
     player.update()
     # game_map.render(screen)
