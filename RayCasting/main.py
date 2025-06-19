@@ -19,8 +19,8 @@ while True:
     screen.fill("black")
 
     player.update()
-    game_map.render(screen)
-    player.render(screen)
+    # game_map.render(screen)
+    # player.render(screen)
     ray_caster.cast_rays()
     ray_caster.render(screen)
 

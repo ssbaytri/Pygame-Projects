@@ -19,5 +19,10 @@ class RayCaster:
             ray_angle += FOV / NUMS_RAYS
 
     def render(self, screen):
+        i = 0
         for ray in self.rays:
-            ray.render(screen)
+            # ray.render(screen)
+            line_height =  (64 / ray.distance) * (WINDOW_WIDTH / 2 * math.tan(FOV/2))
+            draw_begin = (WINDOW_HEIGHT / 2) - (line_height / 2)
+            pygame.draw.rect(screen, "green", (i * RES, draw_begin, RES, line_height))
+            i += 1

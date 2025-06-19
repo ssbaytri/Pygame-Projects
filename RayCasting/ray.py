@@ -24,6 +24,8 @@ class Ray:
 
         self.wall_hit_x = 0
         self.wall_hit_y = 0
+        
+        self.distance = 0
 
     def cast(self):
         found_horizontal_wall = False
@@ -107,9 +109,11 @@ class Ray:
         if horizontal_dist < vertical_dist:
             self.wall_hit_x = horizontal_hit_x
             self.wall_hit_y = horizontal_hit_y
+            self.distance = horizontal_dist
         else:
             self.wall_hit_x = vertical_hit_x
             self.wall_hit_y = vertical_hit_y
+            self.distance = vertical_dist
         
 
     def render(self, screen):
