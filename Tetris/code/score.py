@@ -10,14 +10,18 @@ class Score:
         self.font = pygame.font.Font(path.join('..', 'graphics', 'Russo_One.ttf'), 30)
         self.increment_height = self.surf.get_height() / 3
         
+        self.score = 0
+        self.lines = 0
+        self.level = 1
+        
     def display_text(self, pos, text):
-        text_surf = self.font.render(text, True, 'white')
+        text_surf = self.font.render(f"{text[0]}: {text[1]}", True, 'white')
         text_rect = text_surf.get_rect(center=pos)
         self.surf.blit(text_surf, text_rect)
         
     def run(self):
         self.surf.fill(GRAY)
-        for i, text in enumerate(['Score', 'Level', 'Lines']):
+        for i, text in enumerate([('Score', self.score), ('Level', self.level), ('Lines', self.lines)]):
             x = self.surf.get_width() / 2
             y = self.increment_height / 2 + (i * self.increment_height)
             self.display_text((x, y), text)
