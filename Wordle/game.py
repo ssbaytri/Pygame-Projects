@@ -17,10 +17,14 @@ clock = pygame.time.Clock()
 level = 0
 board = [['' for _ in range(COLS)] for _ in range(ROWS)]
 
+font = pygame.font.Font("freesansbold.ttf", 56)
+
 def draw_board():
     for col in range(COLS):
         for row in range(ROWS):
             pygame.draw.rect(screen, "white", (col * 100 + MARGIN, row * 100 + MARGIN, 75, 75), 3, 5)
+            text = font.render(board[row][col], True, "white")
+            screen.blit(text, (col * 100 + 30, row * 100 + 25))
     pygame.draw.rect(screen, "green", (LEVEL_BOX_MARGIN, level * 100 + LEVEL_BOX_MARGIN, WIDTH - 10, 90), 3, 5)
 
 running = True
