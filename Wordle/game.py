@@ -16,8 +16,13 @@ clock = pygame.time.Clock()
 
 level = 0
 board = [['' for _ in range(COLS)] for _ in range(ROWS)]
+letter_idx = 0
+input_active = True
 
 font = pygame.font.Font("freesansbold.ttf", 56)
+secret_word = "power"
+game_over = False
+
 
 def draw_board():
     for col in range(COLS):
@@ -32,6 +37,18 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
             running = False
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_BACKSPACE and letter_idx > 0:
+            board[level][letter_idx - 1] = ''
+            letter_idx -= 1
+        if event.type == pygame.TEXTINPUT and not game_over and input_active:
+            entry = event.text
+            board[level][letter_idx] = entry
+            letter_idx += 1
+    
+    if letter_idx == 5:
+        input_active = False
+    if letter_idx < 5:
+        input_active = True
     
     clock.tick(FPS)
     screen.fill("black")
