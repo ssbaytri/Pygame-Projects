@@ -49,3 +49,5 @@ WORDS = [
     "woven", "wrath", "wreck", "wrist", "write", "wrong", "wrote", "yacht", "yearn", "yeast",
     "yield", "young", "youth", "zebra", "zesty", "zoned", "zones"
 ]
+
+#---------------------     END OF THE GAME    -----------------------------
