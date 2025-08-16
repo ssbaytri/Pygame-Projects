@@ -21,19 +21,23 @@ class Player(pygame.sprite.Sprite):
 		self.speed = PLAYER_SPEED
 
 	def user_input(self):
-		self.vel_x = 0
-		self.vel_y = 0
-
+		direction = pygame.math.Vector2(0, 0)
 		keys = pygame.key.get_pressed()
 
 		if keys[pygame.K_w]:
-			self.vel_y = -self.speed
+			direction.y = -1
 		if keys[pygame.K_s]:
-			self.vel_y = self.speed
+			direction.y = 1
 		if keys[pygame.K_a]:
-			self.vel_x = -self.speed
+			direction.x = -1
 		if keys[pygame.K_d]:
-			self.vel_x = self.speed
+			direction.x = 1
+
+		if direction.length() != 0:
+			direction = direction.normalize() * self.speed
+
+		self.vel_x = direction.x
+		self.vel_y = direction.y
 
 	def move(self):
 		self.pos += pygame.math.Vector2(self.vel_x, self.vel_y)
