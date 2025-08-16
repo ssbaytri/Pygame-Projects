@@ -18,6 +18,30 @@ class Player(pygame.sprite.Sprite):
 		self.image = pygame.image.load("../player/0.png").convert_alpha()
 		self.new_image = pygame.transform.rotozoom(self.image, 0, PLAYER_SIZE)
 		self.pos = pygame.math.Vector2(PLAYER_START_X, PLAYER_START_Y)
+		self.speed = PLAYER_SPEED
+
+	def user_input(self):
+		self.vel_x = 0
+		self.vel_y = 0
+
+		keys = pygame.key.get_pressed()
+
+		if keys[pygame.K_w]:
+			self.vel_y = -self.speed
+		if keys[pygame.K_s]:
+			self.vel_y = self.speed
+		if keys[pygame.K_a]:
+			self.vel_x = -self.speed
+		if keys[pygame.K_d]:
+			self.vel_x = self.speed
+
+	def move(self):
+		self.pos += pygame.math.Vector2(self.vel_x, self.vel_y)
+
+	def update(self):
+		self.user_input()
+		self.move()
+
 
 player = Player()
 
@@ -30,6 +54,7 @@ while running:
 	screen.fill("black")
 	screen.blit(new_bg, (0, 0))
 	screen.blit(player.new_image, player.pos)
+	player.update()
 	pygame.display.flip()
 	clock.tick(FPS)
 
