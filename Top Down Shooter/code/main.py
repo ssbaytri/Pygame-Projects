@@ -26,6 +26,7 @@ class Player(pygame.sprite.Sprite):
 		self.speed = PLAYER_SPEED
 		self.shooting = False
 		self.shoot_cooldown = 0
+		self.gun_barrel_offset = pygame.math.Vector2(GUN_OFFSET_X, GUN_OFFSET_Y)
 
 	def player_rotation(self):
 		self.mouse_cords = pygame.mouse.get_pos()
@@ -63,7 +64,8 @@ class Player(pygame.sprite.Sprite):
 	def is_shooting(self):
 		if self.shoot_cooldown == 0:
 			self.shoot_cooldown = SHOOT_COOLDOWN
-			self.bullet = Bullet(self.pos[0], self.pos[1], self.angle)
+			bullet_pos = self.pos + self.gun_barrel_offset.rotate(self.angle)
+			self.bullet = Bullet(bullet_pos[0], bullet_pos[1], self.angle)
 			bullet_group.add(self.bullet)
 			all_sprites.add(self.bullet)
 
@@ -93,11 +95,16 @@ class Bullet(pygame.sprite.Sprite):
 		self.speed = BULLET_SPEED
 		self.x_vel = math.cos(math.radians(self.angle)) * self.speed
 		self.y_vel = math.sin(math.radians(self.angle)) * self.speed
+		self.bullet_lifetime = BULLET_LIFETIME
+		self.spawn_time = pygame.time.get_ticks()
 
 	def move(self):
 		self.x += self.x_vel
 		self.y += self.y_vel
 		self.rect.center = (int(self.x), int(self.y))
+
+		if pygame.time.get_ticks() - self.spawn_time > self.bullet_lifetime:
+			self.kill()
 
 	def update(self):
 		self.move()
