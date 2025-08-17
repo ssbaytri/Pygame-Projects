@@ -12,13 +12,25 @@ clock = pygame.time.Clock()
 background = pygame.image.load("../background/background.png").convert_alpha()
 new_bg = pygame.transform.scale(background, (WIDTH, HEIGHT))
 
+
 class Player(pygame.sprite.Sprite):
 	def __init__(self):
 		super().__init__()
 		self.image = pygame.image.load("../player/0.png").convert_alpha()
 		self.new_image = pygame.transform.rotozoom(self.image, 0, PLAYER_SIZE)
+		self.base_img = self.image
 		self.pos = pygame.math.Vector2(PLAYER_START_X, PLAYER_START_Y)
+		self.hitbox_rect = self.base_img.get_rect(center=self.pos)
+		self.rect = self.hitbox_rect.copy()
 		self.speed = PLAYER_SPEED
+
+	def player_rotation(self):
+		self.mouse_cords = pygame.mouse.get_pos()
+		self.x_change = (self.mouse_cords[0] - self.hitbox_rect.centerx)
+		self.y_change = (self.mouse_cords[1] - self.hitbox_rect.centery)
+		self.angle = math.degrees(math.atan2(self.y_change, self.x_change))
+		self.new_image = pygame.transform.rotate(self.base_img, -self.angle)
+		self.rect = self.new_image.get_rect(center=self.hitbox_rect.center)
 
 	def user_input(self):
 		direction = pygame.math.Vector2(0, 0)
@@ -41,10 +53,13 @@ class Player(pygame.sprite.Sprite):
 
 	def move(self):
 		self.pos += pygame.math.Vector2(self.vel_x, self.vel_y)
+		self.hitbox_rect.center = self.pos
+		self.rect.center = self.hitbox_rect.center
 
 	def update(self):
 		self.user_input()
 		self.move()
+		self.player_rotation()
 
 
 player = Player()
@@ -57,7 +72,9 @@ while running:
 
 	screen.fill("black")
 	screen.blit(new_bg, (0, 0))
-	screen.blit(player.new_image, player.pos)
+	screen.blit(player.new_image, player.rect)
+	pygame.draw.rect(screen, "red", player.hitbox_rect, 2)
+	pygame.draw.rect(screen, "yellow", player.rect, 2)
 	player.update()
 	pygame.display.flip()
 	clock.tick(FPS)
