@@ -16,21 +16,24 @@ new_bg = pygame.transform.scale(background, (WIDTH, HEIGHT))
 class Player(pygame.sprite.Sprite):
 	def __init__(self):
 		super().__init__()
-		self.image = pygame.image.load("../player/0.png").convert_alpha()
-		self.new_image = pygame.transform.rotozoom(self.image, 0, PLAYER_SIZE)
+		self.vel_y = None
+		self.vel_x = None
+		self.image = pygame.transform.rotozoom(pygame.image.load("../player/0.png").convert_alpha(), 0, PLAYER_SIZE)
 		self.base_img = self.image
 		self.pos = pygame.math.Vector2(PLAYER_START_X, PLAYER_START_Y)
 		self.hitbox_rect = self.base_img.get_rect(center=self.pos)
 		self.rect = self.hitbox_rect.copy()
 		self.speed = PLAYER_SPEED
+		self.shooting = False
+		self.shoot_cooldown = 0
 
 	def player_rotation(self):
 		self.mouse_cords = pygame.mouse.get_pos()
 		self.x_change = (self.mouse_cords[0] - self.hitbox_rect.centerx)
 		self.y_change = (self.mouse_cords[1] - self.hitbox_rect.centery)
 		self.angle = math.degrees(math.atan2(self.y_change, self.x_change))
-		self.new_image = pygame.transform.rotate(self.base_img, -self.angle)
-		self.rect = self.new_image.get_rect(center=self.hitbox_rect.center)
+		self.image = pygame.transform.rotate(self.base_img, -self.angle)
+		self.rect = self.image.get_rect(center=self.hitbox_rect.center)
 
 	def user_input(self):
 		direction = pygame.math.Vector2(0, 0)
@@ -51,6 +54,19 @@ class Player(pygame.sprite.Sprite):
 		self.vel_x = direction.x
 		self.vel_y = direction.y
 
+		if pygame.mouse.get_pressed()[0] or keys[pygame.K_SPACE]:
+			self.shooting = True
+			self.is_shooting()
+		else:
+			self.shooting = False
+
+	def is_shooting(self):
+		if self.shoot_cooldown == 0:
+			self.shoot_cooldown = SHOOT_COOLDOWN
+			self.bullet = Bullet(self.pos[0], self.pos[1], self.angle)
+			bullet_group.add(self.bullet)
+			all_sprites.add(self.bullet)
+
 	def move(self):
 		self.pos += pygame.math.Vector2(self.vel_x, self.vel_y)
 		self.hitbox_rect.center = self.pos
@@ -61,8 +77,37 @@ class Player(pygame.sprite.Sprite):
 		self.move()
 		self.player_rotation()
 
+		if self.shoot_cooldown > 0:
+			self.shoot_cooldown -= 1
+
+
+class Bullet(pygame.sprite.Sprite):
+	def __init__(self, x, y, angle):
+		super().__init__()
+		self.base_image = pygame.image.load("../bullet/1.png").convert_alpha()
+		self.image = pygame.transform.rotozoom(self.base_image, 0, BULLET_SCALE)
+		self.rect = self.image.get_rect(center=(x, y))
+		self.x = x
+		self.y = y
+		self.angle = angle
+		self.speed = BULLET_SPEED
+		self.x_vel = math.cos(math.radians(self.angle)) * self.speed
+		self.y_vel = math.sin(math.radians(self.angle)) * self.speed
+
+	def move(self):
+		self.x += self.x_vel
+		self.y += self.y_vel
+		self.rect.center = (int(self.x), int(self.y))
+
+	def update(self):
+		self.move()
+
 
 player = Player()
+all_sprites = pygame.sprite.Group()
+bullet_group = pygame.sprite.Group()
+
+all_sprites.add(player)
 
 running = True
 while running:
@@ -72,12 +117,10 @@ while running:
 
 	screen.fill("black")
 	screen.blit(new_bg, (0, 0))
-	screen.blit(player.new_image, player.rect)
-	pygame.draw.rect(screen, "red", player.hitbox_rect, 2)
-	pygame.draw.rect(screen, "yellow", player.rect, 2)
-	player.update()
-	pygame.display.flip()
+	all_sprites.draw(screen)
+	all_sprites.update()
 	clock.tick(FPS)
+	pygame.display.flip()
 
 pygame.quit()
 exit()
