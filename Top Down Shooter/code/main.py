@@ -12,6 +12,9 @@ clock = pygame.time.Clock()
 # background = pygame.image.load("../background/background.png").convert_alpha()
 new_bg = pygame.image.load("../background/ground.png").convert_alpha()
 
+all_sprites = pygame.sprite.Group()
+bullet_group = pygame.sprite.Group()
+enemy_group = pygame.sprite.Group()
 
 class Player(pygame.sprite.Sprite):
 	def __init__(self):
@@ -127,10 +130,43 @@ class Camera(pygame.sprite.Sprite):
 			offset_pos = sprite.rect.topleft - self.offset
 			screen.blit(sprite.image, offset_pos)
 
+
+class Enemy(pygame.sprite.Sprite):
+	def __init__(self, pos):
+		super().__init__(enemy_group, all_sprites)
+		self.image = pygame.image.load("../necromancer/hunt/0.png").convert_alpha()
+		self.image = pygame.transform.rotozoom(self.image, 0, 2)
+		self.rect = self.image.get_rect(center=pos)
+
+		self.direction = pygame.math.Vector2()
+		self.vel = pygame.math.Vector2()
+		self.speed = ENEMY_SPEED
+		self.position = pygame.math.Vector2()
+
+	def hunt_player(self):
+		player_vec = pygame.math.Vector2(player.hitbox_rect.center)
+		enemy_vec = pygame.math.Vector2(self.rect.center)
+		dist = self.get_distance(player_vec, enemy_vec)
+
+		if dist > 0:
+			self.direction = (player_vec - enemy_vec).normalize()
+		else:
+			self.direction = pygame.math.Vector2()
+		self.vel = self.direction * self.speed
+		self.position += self.vel
+
+		self.rect.center = self.position
+
+	def get_distance(self, vec1, vec2):
+		return (vec1 - vec2).magnitude()
+
+	def update(self):
+		self.hunt_player()
+
+
 camera = Camera()
 player = Player()
-all_sprites = pygame.sprite.Group()
-bullet_group = pygame.sprite.Group()
+enemy = Enemy((400, 400))
 
 all_sprites.add(player)
 
