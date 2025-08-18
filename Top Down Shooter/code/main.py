@@ -29,10 +29,10 @@ class Player(pygame.sprite.Sprite):
 		self.gun_barrel_offset = pygame.math.Vector2(GUN_OFFSET_X, GUN_OFFSET_Y)
 
 	def player_rotation(self):
-		self.mouse_cords = pygame.mouse.get_pos()
-		self.x_change = (self.mouse_cords[0] - self.hitbox_rect.centerx)
-		self.y_change = (self.mouse_cords[1] - self.hitbox_rect.centery)
-		self.angle = math.degrees(math.atan2(self.y_change, self.x_change))
+		mouse_x, mouse_y = pygame.mouse.get_pos()
+		dx = mouse_x - (WIDTH // 2)
+		dy = mouse_y - (HEIGHT // 2)
+		self.angle = math.degrees(math.atan2(dy, dx))
 		self.image = pygame.transform.rotate(self.base_img, -self.angle)
 		self.rect = self.image.get_rect(center=self.hitbox_rect.center)
 
