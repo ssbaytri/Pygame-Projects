@@ -9,8 +9,8 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Top Down Shooter")
 clock = pygame.time.Clock()
 
-background = pygame.image.load("../background/background.png").convert_alpha()
-new_bg = pygame.transform.scale(background, (WIDTH, HEIGHT))
+# background = pygame.image.load("../background/background.png").convert_alpha()
+new_bg = pygame.image.load("../background/ground.png").convert_alpha()
 
 
 class Player(pygame.sprite.Sprite):
@@ -110,6 +110,24 @@ class Bullet(pygame.sprite.Sprite):
 		self.move()
 
 
+class Camera(pygame.sprite.Sprite):
+	def __init__(self):
+		super().__init__()
+		self.offset = pygame.math.Vector2()
+		self.floor_rect = new_bg.get_rect(topleft=(0, 0))
+
+	def custom_draw(self):
+		self.offset.x = player.rect.centerx - WIDTH // 2
+		self.offset.y = player.rect.centery - HEIGHT // 2
+
+		floor_offset = self.floor_rect.topleft - self.offset
+		screen.blit(new_bg, floor_offset)
+
+		for sprite in all_sprites:
+			offset_pos = sprite.rect.topleft - self.offset
+			screen.blit(sprite.image, offset_pos)
+
+camera = Camera()
 player = Player()
 all_sprites = pygame.sprite.Group()
 bullet_group = pygame.sprite.Group()
@@ -123,8 +141,8 @@ while running:
 			running = False
 
 	screen.fill("black")
-	screen.blit(new_bg, (0, 0))
-	all_sprites.draw(screen)
+	# all_sprites.draw(screen)
+	camera.custom_draw()
 	all_sprites.update()
 	clock.tick(FPS)
 	pygame.display.flip()
