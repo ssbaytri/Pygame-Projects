@@ -204,7 +204,8 @@ class Enemy(pygame.sprite.Sprite):
 
 camera = Camera()
 player = Player()
-enemy = Enemy(find_valid_spawn_position())
+for _ in range(3):
+    Enemy(find_valid_spawn_position())
 
 all_sprites.add(player)
 
