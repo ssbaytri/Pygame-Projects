@@ -1,7 +1,9 @@
 import pygame
 from sys import exit
 import math
+import random
 from settings import *
+import csv
 
 pygame.init()
 
@@ -15,6 +17,34 @@ new_bg = pygame.image.load("../background/ground.png").convert_alpha()
 all_sprites = pygame.sprite.Group()
 bullet_group = pygame.sprite.Group()
 enemy_group = pygame.sprite.Group()
+
+wall_rects = []
+
+def load_wall_layer(path):
+    with open(path, newline='') as f:
+        reader = csv.reader(f)
+        return [[int(cell) for cell in row] for row in reader]
+
+def find_valid_spawn_position():
+    wall_data = load_wall_layer("../data/csvfiles/Map_Walls.csv")
+    max_attempts = 100
+    
+    for _ in range(max_attempts):
+        x = random.randint(10, len(wall_data[0]) - 10)  # Stay away from edges
+        y = random.randint(10, len(wall_data) - 10)
+        
+        if wall_data[y][x] == -1:
+            pixel_x = x * TILE_SIZE + TILE_SIZE // 2
+            pixel_y = y * TILE_SIZE + TILE_SIZE // 2
+            return (pixel_x, pixel_y)
+    
+    return (1000, 1000)
+
+for y, row in enumerate(load_wall_layer("../data/csvfiles/Map_Walls.csv")):
+    for x, tile_id in enumerate(row):
+        if tile_id != -1:
+            rect = pygame.Rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+            wall_rects.append(rect)
 
 class Player(pygame.sprite.Sprite):
 	def __init__(self):
@@ -73,7 +103,15 @@ class Player(pygame.sprite.Sprite):
 			all_sprites.add(self.bullet)
 
 	def move(self):
-		self.pos += pygame.math.Vector2(self.vel_x, self.vel_y)
+		new_pos = self.pos + pygame.math.Vector2(self.vel_x, self.vel_y)
+		new_rect = self.hitbox_rect.copy()
+		new_rect.center = new_pos
+
+		for wall in wall_rects:
+			if new_rect.colliderect(wall):
+				return
+
+		self.pos = new_pos
 		self.hitbox_rect.center = self.pos
 		self.rect.center = self.hitbox_rect.center
 
@@ -141,7 +179,7 @@ class Enemy(pygame.sprite.Sprite):
 		self.direction = pygame.math.Vector2()
 		self.vel = pygame.math.Vector2()
 		self.speed = ENEMY_SPEED
-		self.position = pygame.math.Vector2()
+		self.position = pygame.math.Vector2(pos)
 
 	def hunt_player(self):
 		player_vec = pygame.math.Vector2(player.hitbox_rect.center)
@@ -166,7 +204,7 @@ class Enemy(pygame.sprite.Sprite):
 
 camera = Camera()
 player = Player()
-enemy = Enemy((400, 400))
+enemy = Enemy(find_valid_spawn_position())
 
 all_sprites.add(player)
 
