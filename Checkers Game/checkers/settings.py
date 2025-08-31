@@ -1,0 +1,6 @@
+import pygame
+
+ROWS, COLS = 8, 8
+TILE_SIZE = 80
+WIDTH, HEIGHT = COLS * TILE_SIZE, ROWS * TILE_SIZE
+FPS = 60
