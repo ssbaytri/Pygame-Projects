@@ -1,4 +1,5 @@
 from checkers.settings import *
+from checkers.board import Board
 
 pygame.init()
 
@@ -9,6 +10,7 @@ pygame.display.set_caption("Checkers")
 def main():
     running = True
     clock = pygame.time.Clock()
+    board = Board()
 
     while running:
         clock.tick(FPS)
@@ -16,6 +18,11 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 running = False
+
+        screen.fill("black")
+        board.draw_cubes(screen)
+        pygame.display.update()
+
     pygame.quit()
 
 
