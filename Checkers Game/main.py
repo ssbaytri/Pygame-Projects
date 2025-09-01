@@ -19,8 +19,8 @@ def main():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 running = False
 
-        screen.fill("black")
-        board.draw_cubes(screen)
+        screen.fill(DARK_TILES)
+        board.draw(screen)
         pygame.display.update()
 
     pygame.quit()
