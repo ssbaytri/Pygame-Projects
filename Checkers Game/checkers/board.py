@@ -27,6 +27,13 @@ class Board:
                     else:
                         self.board[row].append(0)
 
+    def move(self, piece, row, col):
+        self.board[piece.row][piece.col], self.board[row][col] = self.board[row][col], self.board[piece.row][piece.col]
+        piece.move(row, col)
+
+        if row == ROWS or row == 0:
+            piece.set_king()
+
     def draw(self, win):
         self.draw_cubes(win)
         for row in range(len(self.board)):
