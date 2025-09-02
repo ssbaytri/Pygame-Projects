@@ -26,6 +26,8 @@ class Board:
                         self.board[row].append(Piece(row, col, P1_COLOR))
                     else:
                         self.board[row].append(0)
+                else:
+                    self.board[row].append(0)
 
     def move(self, piece, row, col):
         self.board[piece.row][piece.col], self.board[row][col] = self.board[row][col], self.board[piece.row][piece.col]
@@ -33,6 +35,13 @@ class Board:
 
         if row == ROWS or row == 0:
             piece.set_king()
+            if piece.color == P2_COLOR:
+                self.white_kings += 1
+            else:
+                self.red_kings += 1
+
+    def get_piece(self, row, col):
+        return self.board[row][col]
 
     def draw(self, win):
         self.draw_cubes(win)
