@@ -1,5 +1,5 @@
 from checkers.settings import *
-from checkers.board import Board
+from checkers.game import Game
 
 pygame.init()
 
@@ -17,7 +17,7 @@ def get_pos_from_mouse(pos):
 def main():
     running = True
     clock = pygame.time.Clock()
-    board = Board()
+    game = Game(screen)
 
     while running:
         clock.tick(FPS)
@@ -29,12 +29,9 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
                 row, col = get_pos_from_mouse(pos)
-                piece = board.get_piece(row, col)
                 print(row, col)
 
-        screen.fill(DARK_TILES)
-        board.draw(screen)
-        pygame.display.update()
+        game.update()
 
     pygame.quit()
 
