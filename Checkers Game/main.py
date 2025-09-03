@@ -29,7 +29,8 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
                 row, col = get_pos_from_mouse(pos)
-                print(row, col)
+                if game.turn == P1_COLOR:
+                    game.select(row, col)
 
         game.update()
 
