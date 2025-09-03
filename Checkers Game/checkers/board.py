@@ -6,8 +6,8 @@ class Board:
     def __init__(self):
         self.board = []
         self.selected_piece = None
-        self.red_left = self.white_left = 12
-        self.red_kings = self.white_kings = 0
+        self.black_left = self.white_left = 12
+        self.black_kings = self.white_kings = 0
         self.create_board()
 
     def draw_cubes(self, win):
@@ -33,12 +33,12 @@ class Board:
         self.board[piece.row][piece.col], self.board[row][col] = self.board[row][col], self.board[piece.row][piece.col]
         piece.move(row, col)
 
-        if row == ROWS or row == 0:
+        if row == ROWS - 1 or row == 0:
             piece.set_king()
             if piece.color == P2_COLOR:
                 self.white_kings += 1
             else:
-                self.red_kings += 1
+                self.black_kings += 1
 
     def get_piece(self, row, col):
         return self.board[row][col]
@@ -50,6 +50,22 @@ class Board:
                 piece = self.board[row][col]
                 if piece != 0:
                     piece.draw(win)
+
+    def remove(self, pieces):
+        for piece in pieces:
+            self.board[piece.row][piece.col] = 0
+            if piece != 0:
+                if piece.color == P1_COLOR:
+                    self.black_left -= 1
+                else:
+                    self.white_left -= 1
+
+    def winner(self):
+        if self.black_left <= 0:
+            return P2_COLOR
+        elif self.white_left <= 0:
+            return P1_COLOR
+        return None
 
     def get_valid_moves(self, piece):
         moves = {}

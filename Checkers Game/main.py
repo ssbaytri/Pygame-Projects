@@ -21,6 +21,8 @@ def main():
 
     while running:
         clock.tick(FPS)
+        if game.winner() is not None:
+            print(f"The winner of this game is{game.winner()}")
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
@@ -29,8 +31,7 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
                 row, col = get_pos_from_mouse(pos)
-                if game.turn == P1_COLOR:
-                    game.select(row, col)
+                game.select(row, col)
 
         game.update()
 

@@ -40,6 +40,9 @@ class Game:
         piece = self.board.get_piece(row, col)
         if self.selected and piece == 0 and (row, col) in self.valid_moves:
             self.board.move(self.selected, row, col)
+            skipped = self.valid_moves[(row, col)]
+            if skipped:
+                self.board.remove(skipped)
             self.change_turn()
         else:
             return False
@@ -51,7 +54,11 @@ class Game:
             pygame.draw.circle(self.win, "blue", (col * TILE_SIZE + TILE_SIZE // 2, row * TILE_SIZE + TILE_SIZE // 2), 15)
 
     def change_turn(self):
+        self.valid_moves = {}
         if self.turn == P1_COLOR:
             self.turn = P2_COLOR
         else:
             self.turn = P1_COLOR
+
+    def winner(self):
+        return self.board.winner()
