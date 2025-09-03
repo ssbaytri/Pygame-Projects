@@ -62,9 +62,9 @@ class Board:
 
     def winner(self):
         if self.black_left <= 0:
-            return P2_COLOR
+            return "Player2"
         elif self.white_left <= 0:
-            return P1_COLOR
+            return "Player1"
         return None
 
     def get_valid_moves(self, piece):

@@ -22,7 +22,8 @@ def main():
     while running:
         clock.tick(FPS)
         if game.winner() is not None:
-            print(f"The winner of this game is{game.winner()}")
+            game.display_winner(screen)
+            game.reset()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):

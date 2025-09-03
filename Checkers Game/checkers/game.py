@@ -1,3 +1,5 @@
+import pygame.display
+
 from checkers.settings import *
 from checkers.board import Board
 
@@ -62,3 +64,20 @@ class Game:
 
     def winner(self):
         return self.board.winner()
+
+    def display_winner(self, win):
+        font = pygame.font.SysFont("comicsans", 60)
+        winner_text = f"The winner is {self.winner()}"
+        text = font.render(winner_text, True, "white")
+
+        text_width, text_height = text.get_size()
+        rect_x = (WIDTH // 2) - (text_width // 2) - 10
+        rect_y = (HEIGHT // 2) - (text_height // 2) - 10
+        rect_width = text_width + 20
+        rect_height = text_height + 20
+
+        pygame.draw.rect(win, "black", (rect_x, rect_y, rect_width, rect_height))
+
+        win.blit(text, (WIDTH // 2 - text_width // 2, HEIGHT // 2 - text_height // 2))
+        pygame.display.update()
+        pygame.time.delay(3000)
