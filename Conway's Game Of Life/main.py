@@ -34,6 +34,17 @@ def main():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 running = False
                 
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                x, y = pygame.mouse.get_pos()
+                col = x // TILE_SIZE
+                row = y // TILE_SIZE
+                pos = (col, row)
+                
+                if pos in positions:
+                    positions.remove(pos)
+                else:
+                    positions.add(pos)
+                
         window.fill("grey")
         draw_grid(positions)
         pygame.display.update()
