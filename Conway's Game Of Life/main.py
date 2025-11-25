@@ -1,4 +1,5 @@
 import pygame
+import random
 
 pygame.init()
 WIDTH, HEIGHT = 800, 600
@@ -23,8 +24,17 @@ def draw_grid(positions):
 	for col in range(GRID_WIDTH):
 		pygame.draw.line(window, "black", (col * TILE_SIZE, 0), (col * TILE_SIZE, HEIGHT))
 
+
+def gen(num):
+    return {
+        (random.randrange(0, GRID_WIDTH),
+         random.randrange(0, GRID_HEIGHT))
+        for _ in range(num)
+    }
+
 def main():
     running = True
+    playing = False
     
     positions = set()
     while running:
@@ -44,6 +54,17 @@ def main():
                     positions.remove(pos)
                 else:
                     positions.add(pos)
+                    
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    playing = not playing
+                    
+                if event.key == pygame.K_c:
+                    positions = set()
+                    playing = False
+                    
+                if event.key == pygame.K_g:
+                    positions = gen(random.randrange(4, 10) * GRID_WIDTH)
                 
         window.fill("grey")
         draw_grid(positions)
