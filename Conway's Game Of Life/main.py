@@ -11,12 +11,17 @@ window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Conway's Game Of Life")
 clock = pygame.time.Clock()
 
-def draw_grid(pos):
-    for row in range(GRID_HEIGHT):
-        pygame.draw.line(window, "black", (0, row * TILE_SIZE), (WIDTH, row * TILE_SIZE))
+def draw_grid(positions):
+	for pos in positions:
+		col, row = pos
+		top_left = (col * TILE_SIZE, row * TILE_SIZE)
+		pygame.draw.rect(window, "yellow", (*top_left, TILE_SIZE, TILE_SIZE))
+
+	for row in range(GRID_HEIGHT):
+		pygame.draw.line(window, "black", (0, row * TILE_SIZE), (WIDTH, row * TILE_SIZE))
         
-    for col in range(GRID_WIDTH):
-        pygame.draw.line(window, "black", (col * TILE_SIZE, 0), (col * TILE_SIZE, HEIGHT))
+	for col in range(GRID_WIDTH):
+		pygame.draw.line(window, "black", (col * TILE_SIZE, 0), (col * TILE_SIZE, HEIGHT))
 
 def main():
     running = True
