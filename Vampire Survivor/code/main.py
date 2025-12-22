@@ -28,6 +28,7 @@ class Game:
             self.all_sprites.update(dt)
 
             # draw
+            self.screen.fill("black")
             self.all_sprites.draw(self.screen)
             pygame.display.update()
         pygame.quit()
