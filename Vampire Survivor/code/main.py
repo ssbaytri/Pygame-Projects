@@ -21,12 +21,11 @@ class Game:
         for i in range(6):
             x, y = randint(0, WINDOW_WIDTH), randint(0, WINDOW_HEIGHT)
             w, h = randint(60, 100), randint(50, 100)
-            CollisionSprites((x, y), (w, h), (self.all_sprites, self.collision_sprites))
+            CollisionSprite((x, y), (w, h), (self.all_sprites, self.collision_sprites))
 
     def run(self):
-        dt = self.clock.tick() / 1000
-
         while self.running:
+            dt = self.clock.tick(FPS) / 1000
             for event in pygame.event.get():
                 if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                     self.running = False

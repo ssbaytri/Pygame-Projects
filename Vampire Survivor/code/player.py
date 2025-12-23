@@ -10,7 +10,7 @@ class Player(pygame.sprite.Sprite):
         # movement
         self.pos = pygame.Vector2(self.rect.center)
         self.direction = pygame.Vector2()
-        self.speed = 400
+        self.speed = 500
         self.collision_sprites = collision_sprites
 
     def input(self):
@@ -30,7 +30,13 @@ class Player(pygame.sprite.Sprite):
         for sprite in self.collision_sprites:
             if sprite.rect.colliderect(self.rect):
                 if direction == "horizontal":
-                    if self.direction > 0 : self.rect.right = sprite.rect.left
+                    if self.direction.x > 0 : self.rect.right = sprite.rect.left
+                    if self.direction.x < 0 : self.rect.left = sprite.rect.right
+                    self.pos.x = self.rect.x
+                else:
+                    if self.direction.y < 0 : self.rect.top = sprite.rect.bottom
+                    if self.direction.y > 0 : self.rect.bottom = sprite.rect.top
+                    self.pos.y = self.rect.y
 
     def update(self, dt):
         self.input()
