@@ -3,6 +3,7 @@ from player import Player
 from sprites import *
 from random import randint
 from pytmx.util_pygame import load_pygame
+from groups import AllSprites
 
 
 class Game:
