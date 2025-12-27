@@ -10,5 +10,10 @@ class AllSprites(pygame.sprite.Group):
     def draw(self, target_pos):
         self.offset.x = -(target_pos[0] - WINDOW_WIDTH / 2)
         self.offset.y = -(target_pos[1] - WINDOW_HEIGHT / 2)
-        for sprite in self:
-            self.diplay_surf.blit(sprite.image, sprite.rect.topleft + self.offset)
+        
+        ground_sprites = [sprite for sprite in self if hasattr(sprite, "ground")]
+        object_sprites = [sprite for sprite in self if not hasattr(sprite, "ground")]
+        
+        for layer in [ground_sprites, object_sprites]:
+            for sprite in sorted(layer, key=lambda sprite: sprite.rect.centery):
+                self.diplay_surf.blit(sprite.image, sprite.rect.topleft + self.offset)
