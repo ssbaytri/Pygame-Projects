@@ -12,10 +12,12 @@ class Game:
         pygame.display.set_caption("Vampire Survivor")
         self.clock = pygame.time.Clock()
         self.running = True
+        self.load_images()
 
         # groups
         self.all_sprites = AllSprites()
         self.collision_sprites = pygame.sprite.Group()
+        self.bullet_sprites = pygame.sprite.Group()
 
         self.setup()
         
@@ -24,9 +26,13 @@ class Game:
         self.shoot_time = 0
         self.gun_cooldown = 100
 
+    def load_images(self):
+        self.bullet_surf = pygame.image.load(join("../images", "gun", "bullet.png")).convert_alpha()
+
     def input(self):
         if pygame.mouse.get_pressed()[0] and self.can_shoot:
-            print("shoot")
+            pos = self.gun.rect.center + self.gun.player_dir * 50
+            Bullet(self.bullet_surf, pos, self.gun.player_dir, (self.all_sprites, self.bullet_sprites))
             self.can_shoot = False
             self.shoot_time = pygame.time.get_ticks()
 
