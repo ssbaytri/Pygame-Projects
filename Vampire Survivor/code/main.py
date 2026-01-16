@@ -18,6 +18,8 @@ class Game:
         self.all_sprites = AllSprites()
         self.collision_sprites = pygame.sprite.Group()
         self.bullet_sprites = pygame.sprite.Group()
+        
+        self.spawn_positions = []
 
         self.setup()
         
@@ -25,6 +27,10 @@ class Game:
         self.can_shoot = True
         self.shoot_time = 0
         self.gun_cooldown = 100
+        
+        # enemy timer
+        self.enemy_event = pygame.event.custom_type()
+        pygame.time.set_timer(self.enemy_event, 300)
 
     def load_images(self):
         self.bullet_surf = pygame.image.load(join("../images", "gun", "bullet.png")).convert_alpha()
@@ -58,6 +64,8 @@ class Game:
             if obj.name == "Player":
                 self.player = Player((obj.x, obj.y), self.all_sprites, self.collision_sprites)
                 self.gun = Gun(self.player, self.all_sprites)
+            else:
+                self.spawn_positions.append((obj.x, obj.y))
 
     def run(self):
         while self.running:
@@ -65,6 +73,8 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                     self.running = False
+                if event.type == self.enemy_event:
+                    print("spawn enemy")
 
             # update
             self.gun_timer()
