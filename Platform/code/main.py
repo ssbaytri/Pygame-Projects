@@ -1,5 +1,6 @@
 from settings import * 
 from sprites import *
+from groups import AllSprites
 
 
 class Game:
@@ -11,7 +12,7 @@ class Game:
         self.running = True
 
         # groups 
-        self.all_sprites = pygame.sprite.Group()
+        self.all_sprites = AllSprites()
         self.collision_sprites = pygame.sprite.Group()
         
         # setup
@@ -28,7 +29,7 @@ class Game:
             
         for obj in tmx_map.get_layer_by_name("Entities"):
             if obj.name == "Player":
-                Player((obj.x, obj.y), self.all_sprites, self.collision_sprites)
+                self.player = Player((obj.x, obj.y), self.all_sprites, self.collision_sprites)
 
     def run(self):
         while self.running:
@@ -43,7 +44,7 @@ class Game:
 
             # draw 
             self.display_surface.fill(BG_COLOR)
-            self.all_sprites.draw(self.display_surface)
+            self.all_sprites.draw(self.player.rect.center)
             pygame.display.update()
         
         pygame.quit()
