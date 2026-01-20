@@ -33,10 +33,9 @@ class Player(Sprite):
                     if self.direction.x > 0 : self.rect.right = sprite.rect.left
                     if self.direction.x < 0 : self.rect.left = sprite.rect.right
                 if direction == "vertical":
-                    if self.direction.y > 0 :
-                        self.rect.bottom = sprite.rect.top
-                        self.direction.y = 0
+                    if self.direction.y > 0 : self.rect.bottom = sprite.rect.top
                     if self.direction.y < 0 : self.rect.top = sprite.rect.bottom
+                    self.direction.y = 0
         
     def check_floor(self):
         bottom_rect = pygame.Rect(self.rect.left, self.rect.bottom, self.rect.width, 2)
