@@ -35,9 +35,12 @@ class Player(Sprite):
                 if direction == "vertical":
                     if self.direction.y > 0 :
                         self.rect.bottom = sprite.rect.top
-                        self.on_floor = True
                         self.direction.y = 0
                     if self.direction.y < 0 : self.rect.top = sprite.rect.bottom
+        
+    def check_floor(self):
+        bottom_rect = pygame.Rect(self.rect.left, self.rect.bottom, self.rect.width, 2)
+        self.on_floor = any(bottom_rect.colliderect(sprite.rect) for sprite in self.collision_sprites)
         
     def move(self, dt):
         # horizontal
@@ -45,11 +48,11 @@ class Player(Sprite):
         self.collision("horizontal")
         
         # vertical
-        self.on_floor = False
         self.direction.y += self.gravity * dt
         self.rect.y += self.direction.y
         self.collision("vertical")
         
     def update(self, dt):
+        self.check_floor()
         self.input()
         self.move(dt)
