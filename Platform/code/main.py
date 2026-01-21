@@ -15,15 +15,20 @@ class Game:
         # groups 
         self.all_sprites = AllSprites()
         self.collision_sprites = pygame.sprite.Group()
+        self.bullet_sprites = pygame.sprite.Group()
         
         # setup
         self.load_assets()
         self.setup()
         
+    def create_bullet(self, pos, direction):
+        x = pos[0] + direction * 34 if direction == 1 else pos[0] + direction * 34 - self.bullet_surf.get_width()
+        Bullet((x, pos[1]), self.bullet_surf, direction, (self.all_sprites, self.bullet_sprites))
+        
     def load_assets(self):
         # graphics
         self.player_frames = import_folder("../images", "player")
-        self.bullet_surf = import_folder("../images", "gun", "bullet")
+        self.bullet_surf = import_image("../images", "gun", "bullet")
         self.fire_surf = import_image("../images", "gun", "fire")
         self.bee_frames = import_folder("../images", "enemies", "bee")
         self.worm_frames = import_folder("../images", "enemies", "worm")
@@ -42,7 +47,7 @@ class Game:
             
         for obj in tmx_map.get_layer_by_name("Entities"):
             if obj.name == "Player":
-                self.player = Player((obj.x, obj.y), self.all_sprites, self.collision_sprites, self.player_frames)
+                self.player = Player((obj.x, obj.y), self.all_sprites, self.collision_sprites, self.player_frames, self.create_bullet)
                 
         Bee(self.bee_frames, (500, 600), self.all_sprites)
         Worm(self.worm_frames, (700, 600), self.all_sprites)
