@@ -18,6 +18,22 @@ class AnimatedSprites(Sprite):
         self.image = self.frames[int(self.frame_idx) % len(self.frames)]
 
 
+class Bee(AnimatedSprites):
+    def __init__(self, frames, pos, groups):
+        super().__init__(frames, pos, groups)
+        
+    def update(self, dt):
+        self.animate(dt)
+
+
+class Worm(AnimatedSprites):
+    def __init__(self, frames, pos, groups):
+        super().__init__(frames, pos, groups)
+        
+    def update(self, dt):
+        self.animate(dt)
+
+
 class Player(AnimatedSprites):
     def __init__(self, pos, groups, collision_sprites, frames):
         super().__init__(frames, pos, groups)
