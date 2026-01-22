@@ -63,6 +63,8 @@ class Game:
         for obj in tmx_map.get_layer_by_name("Entities"):
             if obj.name == "Player":
                 self.player = Player((obj.x, obj.y), self.all_sprites, self.collision_sprites, self.player_frames, self.create_bullet)
+            if obj.name == "Worm":
+                Worm(self.worm_frames, pygame.Rect(obj.x, obj.y, obj.width, obj.height), self.all_sprites)
 
     def run(self):
         while self.running:
