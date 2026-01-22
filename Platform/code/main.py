@@ -38,6 +38,7 @@ class Game:
         x = pos[0] + direction * 34 if direction == 1 else pos[0] + direction * 34 - self.bullet_surf.get_width()
         Bullet((x, pos[1]), self.bullet_surf, direction, (self.all_sprites, self.bullet_sprites))
         Fire(pos, self.fire_surf, self.all_sprites, self.player)
+        self.audio["shoot"].play()
         
     def load_assets(self):
         # graphics
@@ -67,13 +68,19 @@ class Game:
             if obj.name == "Worm":
                 Worm(self.worm_frames, pygame.Rect(obj.x, obj.y, obj.width, obj.height), (self.all_sprites, self.enemy_sprites))
 
+        self.audio["music"].play(loops=-1)
+
     def collision(self):
         for bullet in self.bullet_sprites:
             sprite_collision = pygame.sprite.spritecollide(bullet, self.enemy_sprites, False, pygame.sprite.collide_mask)
             if sprite_collision:
+                self.audio["impact"].play()
                 bullet.kill()
                 for sprite in sprite_collision:
                     sprite.destroy()
+
+        if pygame.sprite.spritecollide(self.player, self.enemy_sprites, False, pygame.sprite.collide_mask):
+            self.running = False
 
     def run(self):
         while self.running:
