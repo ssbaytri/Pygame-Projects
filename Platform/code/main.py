@@ -24,6 +24,7 @@ class Game:
     def create_bullet(self, pos, direction):
         x = pos[0] + direction * 34 if direction == 1 else pos[0] + direction * 34 - self.bullet_surf.get_width()
         Bullet((x, pos[1]), self.bullet_surf, direction, (self.all_sprites, self.bullet_sprites))
+        Fire(pos, self.fire_surf, self.all_sprites, self.player)
         
     def load_assets(self):
         # graphics
