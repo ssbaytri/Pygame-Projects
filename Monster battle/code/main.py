@@ -13,6 +13,10 @@ class Game:
         # groups 
         self.all_sprites = pygame.sprite.Group()
 
+        # data
+        player_monster_list = ["Sparchu", "Cleaf", "Jacana"]
+        self.player_monsters = [Monster() for name in player_monster_list]
+
     def run(self):
         while self.running:
             dt = self.clock.tick() / 1000
