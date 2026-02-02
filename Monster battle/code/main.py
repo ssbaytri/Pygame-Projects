@@ -1,6 +1,8 @@
 from settings import *
 from support import *
-from timer import Timer
+from timers import Timer
+from monster import Monster, Opponent
+from random import choice
 
 class Game:
     def __init__(self):
@@ -9,25 +11,41 @@ class Game:
         pygame.display.set_caption('Monster Battle')
         self.clock = pygame.time.Clock()
         self.running = True
+        self.import_assets()
 
         # groups 
         self.all_sprites = pygame.sprite.Group()
 
         # data
-        player_monster_list = ["Sparchu", "Cleaf", "Jacana"]
-        self.player_monsters = [Monster() for name in player_monster_list]
+        monster_name = choice(list(MONSTER_DATA.keys()))
+        self.monster = Monster(monster_name, self.back_surfs[monster_name])
+        self.all_sprites.add(self.monster)
+        opp_name = choice(list(MONSTER_DATA.keys()))
+        self.opp = Opponent(opp_name, self.front_surfs[opp_name], self.all_sprites)
+
+    def import_assets(self):
+        self.back_surfs = folder_importer("../images", "back")
+        self.bg_surfs = folder_importer("../images", "other")
+        self.front_surfs = folder_importer("../images", "front")
+        
+    def draw_monster_floor(self):
+        for sprite in self.all_sprites:
+            floor_rect = self.bg_surfs["floor"].get_rect(center=sprite.rect.midbottom + pygame.Vector2(0, -10))
+            self.display_surface.blit(self.bg_surfs["floor"], floor_rect)
 
     def run(self):
         while self.running:
             dt = self.clock.tick() / 1000
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+                if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                     self.running = False
            
             # update
             self.all_sprites.update(dt)
 
-            # draw  
+            # draw
+            self.display_surface.blit(self.bg_surfs["bg"], (0, 0))
+            self.draw_monster_floor()
             self.all_sprites.draw(self.display_surface)
             pygame.display.update()
         
