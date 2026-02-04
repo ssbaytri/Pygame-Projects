@@ -3,6 +3,8 @@ from support import *
 from timers import Timer
 from monster import Monster, Opponent
 from random import choice
+from ui import UI
+
 
 class Game:
     def __init__(self):
@@ -23,6 +25,9 @@ class Game:
         opp_name = choice(list(MONSTER_DATA.keys()))
         self.opp = Opponent(opp_name, self.front_surfs[opp_name], self.all_sprites)
 
+        # ui
+        self.ui = UI(self.monster)
+
     def import_assets(self):
         self.back_surfs = folder_importer("../images", "back")
         self.bg_surfs = folder_importer("../images", "other")
@@ -39,18 +44,22 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                     self.running = False
+                self.ui.input(event)
            
             # update
             self.all_sprites.update(dt)
+            self.ui.update()
 
             # draw
             self.display_surface.blit(self.bg_surfs["bg"], (0, 0))
             self.draw_monster_floor()
             self.all_sprites.draw(self.display_surface)
+            self.ui.draw()
             pygame.display.update()
         
         pygame.quit()
-    
+
+
 if __name__ == '__main__':
     game = Game()
     game.run()
