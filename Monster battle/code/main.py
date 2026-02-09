@@ -19,14 +19,15 @@ class Game:
         self.all_sprites = pygame.sprite.Group()
 
         # data
-        monster_name = choice(list(MONSTER_DATA.keys()))
-        self.monster = Monster(monster_name, self.back_surfs[monster_name])
+        player_monsters_list = ["Sparchu", "Cleaf", "Jacana", "Gulfin", "Pouch", "Larvea"]
+        self.player_monsters = [Monster(name, self.back_surfs[name]) for name in player_monsters_list]
+        self.monster = self.player_monsters[0]
         self.all_sprites.add(self.monster)
         opp_name = choice(list(MONSTER_DATA.keys()))
         self.opp = Opponent(opp_name, self.front_surfs[opp_name], self.all_sprites)
 
         # ui
-        self.ui = UI(self.monster)
+        self.ui = UI(self.monster, self.player_monsters)
 
     def import_assets(self):
         self.back_surfs = folder_importer("../images", "back")
