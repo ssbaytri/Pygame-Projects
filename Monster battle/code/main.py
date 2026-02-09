@@ -27,12 +27,13 @@ class Game:
         self.opp = Opponent(opp_name, self.front_surfs[opp_name], self.all_sprites)
 
         # ui
-        self.ui = UI(self.monster, self.player_monsters)
+        self.ui = UI(self.monster, self.player_monsters, self.simple_surfs)
 
     def import_assets(self):
         self.back_surfs = folder_importer("../images", "back")
         self.bg_surfs = folder_importer("../images", "other")
         self.front_surfs = folder_importer("../images", "front")
+        self.simple_surfs = folder_importer("../images", "simple")
         
     def draw_monster_floor(self):
         for sprite in self.all_sprites:
@@ -43,7 +44,7 @@ class Game:
         while self.running:
             dt = self.clock.tick() / 1000
             for event in pygame.event.get():
-                if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_q):
                     self.running = False
                 self.ui.input(event)
            

@@ -1,13 +1,16 @@
+import pygame
+
 from settings import *
 
 
 class UI:
-    def __init__(self, monster, player_monsters):
+    def __init__(self, monster, player_monsters, simple_surfs):
         self.display_surf = pygame.display.get_surface()
         self.font = pygame.font.Font(None, 30)
         self.left = WINDOW_WIDTH / 2 - 100
         self.top = WINDOW_HEIGHT / 2 + 50
         self.monster = monster
+        self.simple_surfs = simple_surfs
 
         self.general_options = ["attack", "heal", "switch", "escape"]
         self.general_index = {"col": 0, "row": 0}
@@ -16,13 +19,14 @@ class UI:
         self.cols, self.rows = 2, 2
         self.visible_monsters = 4
         self.player_monsters = player_monsters
+        self.available_monsters = [monster for monster in self.player_monsters if monster != self.monster and monster.health > 0]
         self.switch_index = 0
 
     def input(self, event):
         if event.type == pygame.KEYDOWN:
             if self.state == "switch":
                 if event.key == pygame.K_DOWN:
-                    self.switch_index = min(self.switch_index + 1, len(self.player_monsters) - 1)
+                    self.switch_index = min(self.switch_index + 1, len(self.available_monsters) - 1)
                 elif event.key == pygame.K_UP:
                     self.switch_index = max(self.switch_index - 1, 0)
                 elif event.key == pygame.K_SPACE:
@@ -42,6 +46,12 @@ class UI:
                 elif event.key == pygame.K_SPACE:
                     self._handle_selection()
 
+            if event.key == pygame.K_ESCAPE:
+                self.state = "general"
+                self.general_index = {"col": 0, "row": 0}
+                self.attack_index = {"col": 0, "row": 0}
+                self.switch_index = 0
+
     def _handle_selection(self):
         if self.state == "general":
             selected_index = self.general_index["col"] + self.general_index["row"] * self.cols
@@ -50,8 +60,7 @@ class UI:
             selected_index = self.attack_index["col"] + self.attack_index["row"] * self.cols
             print(self.monster.abilities[selected_index])
         elif self.state == "switch":
-            selected_monster = self.player_monsters[self.switch_index]
-            print(f"Switched to {selected_monster.name}")
+            print(self.available_monsters[self.switch_index])
 
     def quad_select(self, index, options):
         # bg
@@ -77,17 +86,20 @@ class UI:
         pygame.draw.rect(self.display_surf, COLORS["gray"], rect, 4, 4)
 
         v_offset = 0 if self.switch_index < self.visible_monsters else -(self.switch_index - self.visible_monsters + 1) * rect.height / self.visible_monsters
-        for i in range(len(self.player_monsters)):
+        for i in range(len(self.available_monsters)):
             x = rect.centerx
             y = rect.top + rect.height / (self.visible_monsters * 2) + rect.height / self.visible_monsters * i + v_offset
 
-            name = self.player_monsters[i].name
+            name = self.available_monsters[i].name
+            simple_img = self.simple_surfs[name]
+            simple_rect = simple_img.get_rect(center=(x - 100, y))
 
             color = COLORS["gray"] if i == self.switch_index else COLORS["black"]
             text_surf = self.font.render(name, True, color)
-            text_rect = text_surf.get_rect(center=(x, y))
+            text_rect = text_surf.get_rect(midleft=(x, y))
             if rect.collidepoint(text_rect.center):
                 self.display_surf.blit(text_surf, text_rect)
+                self.display_surf.blit(simple_img, simple_rect)
 
     def update(self):
         pass
