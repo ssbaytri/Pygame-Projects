@@ -10,10 +10,10 @@ class Game:
         self.clock = pygame.time.Clock()
 
     def new(self):
-        pass
+        self.board = Board()
+        self.playing = True
 
     def run(self):
-        self.playing = True
         while self.playing:
             self.clock.tick(FPS)
             self.events()
@@ -21,7 +21,7 @@ class Game:
 
     def draw(self):
         self.screen.fill(BGCOLOUR)
-
+        self.board.draw(self.screen)
         pygame.display.flip()
 
     def events(self):
@@ -29,6 +29,16 @@ class Game:
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 pygame.quit()
                 quit(0)
+                
+            if event.type == pygame.MOUSEBUTTONDOWN and not self.board.game_over and not self.board.won:
+                x = event.pos[0] // TILESIZE
+                y = event.pos[1] // TILESIZE
+                
+                if 0 <= x < COLS and 0 <= y < ROWS:
+                    if event.button == 1:
+                        self.board.reveal(x, y)
+                    elif event.button == 3:
+                        self.board.flag(x, y)
 
 
 if __name__ == "__main__":
